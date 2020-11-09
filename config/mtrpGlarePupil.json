@@ -11,18 +11,5 @@
 		"type": "git",
 		"update": "",
 		"url": ""
-	},
-	{
-		"flavor": "",
-		"hook": "",
-		"importance": "",
-		"localHookTemplate": "",
-		"name": "BrainardLabToolbox",
-		"pathPlacement": "append",
-		"subfolder": "LabJackToolbox",
-		"toolboxRoot": "",
-		"type": "include",
-		"update": "",
-		"url": ""
 	}
 ]
