@@ -83,6 +83,7 @@ for vv = 1:length(videoNameStems)
     grayVideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_gray.avi']);
     glintFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_glint.mat']);
     perimeterFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_perimeter.mat']);
+    correctedPerimeterFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_correctedPerimeter.mat']);
     controlFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_controlFile.csv']);
     pupilFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_pupil.mat']);
     fit3VideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_stage3fit.avi']);
