@@ -65,8 +65,6 @@ if ~exist(outputBaseDir)
     mkdir(outputBaseDir)
 end
 
-
-
 %% Turn off the warning regarding over-writing the control file
 warningState = warning;
 warning('off','makeControlFile:overwrittingControlFile');
@@ -81,8 +79,8 @@ for vv = 1:length(videoNameStems)
     
     % The file names
     videoInFileName = fullfile(inputBaseDir,[videoNameStems{vv} '.mp4']);
-    grayVideoName = fullfile(outputBaseDir,[videoNameStems{vv} '.avi']);
-    timebaseFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_timebase.mat']);
+    convertedVideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_converted.avi']);
+    grayVideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_gray.avi']);
     glintFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_glint.mat']);
     perimeterFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_perimeter.mat']);
     controlFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_controlFile.csv']);
@@ -90,12 +88,11 @@ for vv = 1:length(videoNameStems)
     fit3VideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_stage3fit.avi']);
     fit6VideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_stage6fit.avi']);
      
-    % Deinterlace
-    deinterlaceVideo(videoInFileName, grayVideoName, ...
-        universalKeyValues{:},sessionKeyValues{:});
+    % Convert
+    convertMtrpVideos(videoInFileName, convertedVideoName) 
     
-    % Timebase
-    makeTimebase(videoInFileName, timebaseFileName, ...
+    % Deinterlace
+    deinterlaceVideo(convertedVideoName, grayVideoName, ...
         universalKeyValues{:},sessionKeyValues{:});
     
     % Glint
@@ -106,7 +103,7 @@ for vv = 1:length(videoNameStems)
     findPupilPerimeter(grayVideoName, perimeterFileName, ...
         universalKeyValues{:},sessionKeyValues{:});
 
-    % Video
+    % 3rd Stage Video
     makeFitVideo(grayVideoName, fit3VideoName, ...
         'perimeterFileName',perimeterFileName,...
         'glintFileName',glintFileName,...
@@ -124,7 +121,7 @@ for vv = 1:length(videoNameStems)
     fitPupilPerimeter(correctedPerimeterFileName, pupilFileName, ...
         universalKeyValues{:},sessionKeyValues{:});
     
-    % Video
+    % 6th Stage Video
     makeFitVideo(grayVideoName, fit6VideoName, ...
         'perimeterFileName',correctedPerimeterFileName,...
         'pupilFileName',pupilFileName,...
