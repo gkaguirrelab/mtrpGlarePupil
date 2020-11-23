@@ -46,7 +46,7 @@ dropboxBaseDir = getpref('mtrpGlarePupil','dropboxBaseDir');
 
 % set common path params
 pathParams.dataSourceDirRoot = fullfile(dropboxBaseDir,'MTRP_data', 'pupilGlare_01');
-pathParams.dataOutputDirRoot = fullfile(dropboxBaseDir,'MTRP_processing');
+pathParams.dataOutputDirRoot = fullfile(dropboxBaseDir,'MTRP_processing', 'pupilGlare_01');
 
 
 %% Create the input and output paths
