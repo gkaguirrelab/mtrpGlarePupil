@@ -88,19 +88,18 @@ for vv = 1:length(videoNameStems)
     pupilFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_pupil.mat']);
     fit3VideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_stage3fit.avi']);
     fit6VideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_stage6fit.avi']);
-    postProcessedArea = fullfile(outputBaseDir,[videoNameStems{vv} '_area.mat']);
      
-%     % Convert
-%     convertMtrpVideos(videoInFileName, convertedVideoName) 
-%     
-%     % Deinterlace
-%     deinterlaceVideo(convertedVideoName, grayVideoName, ...
-%         universalKeyValues{:},sessionKeyValues{:});
-%     
-%     % Glint
-%     findGlint(grayVideoName, glintFileName, ...
-%         universalKeyValues{:},sessionKeyValues{:});
-%     
+    % Convert
+    convertMtrpVideos(videoInFileName, convertedVideoName) 
+    
+    % Deinterlace
+    deinterlaceVideo(convertedVideoName, grayVideoName, ...
+        universalKeyValues{:},sessionKeyValues{:});
+    
+    % Glint
+    findGlint(grayVideoName, glintFileName, ...
+        universalKeyValues{:},sessionKeyValues{:});
+    
     % Perimeter
     findPupilPerimeter(grayVideoName, perimeterFileName, ...
         universalKeyValues{:},sessionKeyValues{:});
@@ -130,9 +129,6 @@ for vv = 1:length(videoNameStems)
         'glintFileName',glintFileName,...
         'fitLabel', 'initial', ...
         universalKeyValues{:},sessionKeyValues{:});
-    
-    % Postprocess the area vector 
-    mtrpAreaPostprocessing(pupilFileName, postProcessedArea)
     
 end
 
