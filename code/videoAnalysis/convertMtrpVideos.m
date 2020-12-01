@@ -36,7 +36,7 @@ p.addParameter('ffmpegPath','',@isstr);
 p.parse(videoInFileName, videoOutFileName, varargin{:})
 
 %% Convert the video with ffmpeg
-ffmpegCommand = [p.Results.ffmpegPath 'ffmpeg -i' ' ' '"' videoInFileName '"' ' ' '-c:v mpeg4 -q:v 0' ' ' '"' videoOutFileName '"'];
+ffmpegCommand = [p.Results.ffmpegPath 'ffmpeg -i' ' ' '"' videoInFileName '"' ' ' '-c:v libxvid -q:v 0' ' ' '"' videoOutFileName '"'];
 system(ffmpegCommand)
 
 end
