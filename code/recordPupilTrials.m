@@ -13,8 +13,8 @@
 
 
 % Set the parameters of the experiment
-protocolParams.trialDurationSecs = 1;
-protocolParams.recordCommandStem = 'ffmpeg -hide_banner -video_size 1280x720 -framerate 60.000240 -f avfoundation -i "0" -t trialDurationSecs "videoFileOut.mp4"';
+protocolParams.trialDurationSecs = 4;
+protocolParams.recordCommandStem = 'ffmpeg -hide_banner -video_size 640x480 -framerate 60.500094 -f avfoundation -i "1" -t trialDurationSecs "videoFileOut.mp4"';
 protocolParams.experimentName = 'pupilGlare_01';
 
 % Query the user for the subject ID, date, and session
