@@ -25,7 +25,11 @@ vids = 1:75;
 
 videoNameStems = {};
 for ii = vids
-    vidName = ['trial_' num2str(ii)];
+    if ii < 10
+        vidName = ['trial_0' num2str(ii)];
+    else
+        vidName = ['trial_' num2str(ii)];
+    end
     videoNameStems{end+1} = vidName;
 end
 
