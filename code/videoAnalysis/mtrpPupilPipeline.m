@@ -79,7 +79,7 @@ for vv = 1:length(videoNameStems)
     
     % The file names
     videoInFileName = fullfile(inputBaseDir,[videoNameStems{vv} '.mp4']);
-    convertedVideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_converted.avi']);
+    convertedVideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_converted.mov']);
     grayVideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_gray.avi']);
     glintFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_glint.mat']);
     perimeterFileName = fullfile(outputBaseDir,[videoNameStems{vv} '_perimeter.mat']);
