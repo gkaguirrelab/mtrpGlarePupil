@@ -30,8 +30,8 @@ for ii = vids
 end
 
 % Mask bounds
-glintFrameMaskSet = [97   307   332   283];
-pupilFrameMaskSet = [239   367   146   172];
+glintFrameMask = [97   307   332   283];
+pupilFrameMask = [239   367   146   172];
 
 % Pupil settings
 pupilCircleThreshSet = 0.015;
