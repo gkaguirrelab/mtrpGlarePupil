@@ -1,4 +1,4 @@
-function [ output ] = averageAcrossTrials( observerID, dateID, sessionName, varargin )
+function [ data ] = averageAcrossTrials( observerID, dateID, sessionName, trials, varargin )
 % Load and average pupil responses across trials
 %
 % Syntax:
@@ -37,11 +37,15 @@ function [ output ] = averageAcrossTrials( observerID, dateID, sessionName, vara
 %
 % Examples:
 %{
-    observerID = 'GLAR_test';
-    dateID = '2020-11-17';
+    observerID = 'GLAR_briana';
+    dateID = '2020-12-01';
     sessionName = 'session_1'
-    experimentName = '';
-    averageAcrossTrials( observerID, dateID, sessionName, 'experimentName', experimentName )
+    experimentName = 'pupilGlare_01';
+    T = readtable('BRIANA HAGGERTY_11.txt');
+    trials(strcmp(T.Condition,'Glow'))=1;
+    trials(strcmp(T.Condition,'Halo'))=2;
+    trials(strcmp(T.Condition,'Uniform'))=3;
+    [ data ] = averageAcrossTrials( observerID, dateID, sessionName, trials, 'experimentName', experimentName );
 %}
 
 
@@ -53,6 +57,7 @@ p = inputParser; p.KeepUnmatched = false;
 p.addRequired('observerID',@ischar);
 p.addRequired('dateID',@ischar);
 p.addRequired('sessionName',@ischar);
+p.addRequired('trials',@isvector);
 
 % Optional
 p.addParameter('experimentName','pupilGlare_01',@ischar);
@@ -61,23 +66,27 @@ p.addParameter('dataDir',fullfile('MTRP_data'),@ischar);
 p.addParameter('processingDir',fullfile('MTRP_processing'),@ischar);
 p.addParameter('rmseThresh',0.5,@isscalar);
 p.addParameter('blinkFrameBuffer',2,@isscalar);
+p.addParameter('plotColors',{'r',[0.5 0.5 0.5],'k'},@iscell);
+p.addParameter('plotLabels',{'glow','halo','uniform'},@iscell);
 
 % parse
-p.parse(observerID, dateID, sessionName, varargin{:})
+p.parse(observerID, dateID, sessionName, trials, varargin{:})
 
 
 %% Load the trial order
 % Write code here to load and process the output data file from metropsis.
-trials = [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1];
 trialTypes = unique(trials);
 
 
+%% Prepare the variables and figures
+data = [];
+figHandle = figure();
+
 %% Average pupil responses by trial type
 for tt = 1:length(trialTypes)
+
     idx = find(trials == trialTypes(tt));
-    
-    data = [];
-    
+        
     for ii = 1:length(idx)
         
         % Load this puilData file
@@ -101,8 +110,20 @@ for tt = 1:length(trialTypes)
         area = (area - meanArea)/meanArea;
 
         % Add this trial data to the data array
-        data(ii,:) = area;
-
+        data(tt,ii,:) = area;
     end
+    
+    % Get the mean and SEM of the response for this trial type
+    yMean = nanmean(squeeze(data(tt,:,:)));
+    ySEM = nanstd(squeeze(data(tt,:,:))) / sqrt(length(idx));
+
+    plotHandles(tt) = plot(yMean,'-','Color',p.Results.plotColors{tt});
+    hold on
+    plot(yMean+ySEM,':','Color',p.Results.plotColors{tt});
+    plot(yMean-ySEM,':','Color',p.Results.plotColors{tt});
+        
+end
+
+legend(plotHandles,p.Results.plotLabels);
 
 end
