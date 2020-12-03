@@ -39,9 +39,9 @@ pupilFrameMask = [110   322   260   216];
 
 % Pupil settings
 pupilCircleThreshSet = 0.015;
-pupilRangeSets = [35 50];
-ellipseEccenLBUB = [0.2 0.9];
-ellipseAreaLB = 1000;
+pupilRangeSets = [20 50];
+ellipseEccenLBUB = [0 0.88];
+ellipseAreaLB = 0;
 ellipseAreaUP = 90000;
 pupilGammaCorrection = 0.75;
 
@@ -54,9 +54,9 @@ glintThreshold = 0.4;
 % left
 candidateThetas = pi;
 minRadiusProportion = 0.9;
-cutErrorThreshold = 0.5;
+cutErrorThreshold = 0.25;
 %% Loop through video name stems get each video and its corresponding masks
-for ii = vids
+for ii = 1:numel(vids)
     pupilCircleThresh = pupilCircleThreshSet;
     pupilRange = pupilRangeSets;
     videoName = {videoNameStems{ii}};
