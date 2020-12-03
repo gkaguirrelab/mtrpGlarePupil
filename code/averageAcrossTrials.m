@@ -155,11 +155,12 @@ for tt = 1:length(trialTypes)
         hold on
         plot(xVals,yMean+ySEM,':','Color',p.Results.plotColors{tt});
         plot(xVals,yMean-ySEM,':','Color',p.Results.plotColors{tt});
-        ylabel('Proportion change pupil area');
-        xlabel('Time [secs]');
         
         if tt == length(trialTypes)
             legend(plotHandles,p.Results.plotLabels);
+            title([observerID ' - ' dateID ' - ' sessionName],'interpreter', 'none');
+            ylabel('Proportion change pupil area');
+            xlabel('Time [secs]');
         end
         
     end
