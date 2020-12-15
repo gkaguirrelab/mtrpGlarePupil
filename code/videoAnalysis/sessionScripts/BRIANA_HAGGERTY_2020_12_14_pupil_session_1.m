@@ -1,4 +1,4 @@
-%% GLAR_BRIANA HAGGERTY_2020_12_14_pupil_session_1
+%% BRIANA HAGGERTY_2020_12_14_pupil_session_1
 %
 % The video analysis pre-processing pipeline for a MTRP session.
 %
@@ -15,7 +15,7 @@
 %% Session parameters
 
 % Subject and session params.
-pathParams.Subject = 'GLAR_BRIANA HAGGERTY';
+pathParams.Subject = 'BRIANA HAGGERTY';
 pathParams.Date = '2020-12-14';
 pathParams.Session = 'session_1';
 
@@ -42,7 +42,7 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [110   322   260   216];
+pupilFrameMask = [140   302   136   136];
 
 % Pupil settings
 pupilCircleThreshSet = 0.015;
