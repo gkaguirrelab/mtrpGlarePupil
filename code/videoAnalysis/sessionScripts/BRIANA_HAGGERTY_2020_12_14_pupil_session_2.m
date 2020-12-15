@@ -21,10 +21,6 @@ pathParams.Session = 'session_2';
 
 %% Analysis Notes
 
-% Fixes
-% For trial 23 use pupilCircleThreshold = 0.005
-
-% For trial 32 use pupilCircleThreshold = 0.005 and candidateThetas = 0;
 
 %% Videos
 % vids = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
@@ -42,7 +38,7 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [110   322   260   216];
+pupilFrameMask = [90   303   141   178];
 
 % Pupil settings
 pupilCircleThreshSet = 0.015;
