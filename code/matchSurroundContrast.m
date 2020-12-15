@@ -29,6 +29,9 @@ radius_g = 9;
 % The radius (in degrees visual angle) of the center
 radius_c = 3.4;
 
+% Contrast of the background
+contrast_background = 0.0;
+
 % Contrast of the center
 contrast_center = 1.0;
 
@@ -42,8 +45,6 @@ contrast_inner = [1, -0.5, 0.137 ];
 % Contrast at the outer edge of the surround for glare, halo, and uniform
 contrast_outer = [-0.5, 0.607, 0.137 ];
 
-
-
 %% Create visualization of the stimuli
 % Loop through the sets
 
@@ -56,8 +57,10 @@ for ss = 1:length(contrast_inner)
     % R is the distance of each point in the grid from the image center
     R = sqrt(X .^ 2 + Y .^ 2);
     
-    % Render the stimus center
-    stimImage = zeros(size(X));
+    % Initialize the stimulus image with the background
+    stimImage = zeros(size(X)) + contrast_background;
+
+    % Render the center
     stimImage(R < radius_c) = contrast_center;
     
     % Render the stimus surround
