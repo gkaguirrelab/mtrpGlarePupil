@@ -89,26 +89,26 @@ for vv = 1:length(videoNameStems)
     fit3VideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_stage3fit.avi']);
     fit6VideoName = fullfile(outputBaseDir,[videoNameStems{vv} '_stage6fit.avi']);
      
-%     % Convert
-%     convertMtrpVideos(videoInFileName, convertedVideoName) 
+    % Convert
+    convertMtrpVideos(videoInFileName, convertedVideoName) 
     
-    % Deinterlace
-    deinterlaceVideo(convertedVideoName, grayVideoName, ...
-        universalKeyValues{:},sessionKeyValues{:});
-    
-    % Glint
-    findGlint(grayVideoName, glintFileName, ...
-        universalKeyValues{:},sessionKeyValues{:});
-    
-    % Perimeter
-    findPupilPerimeter(grayVideoName, perimeterFileName, ...
-        universalKeyValues{:},sessionKeyValues{:});
-
-    % 3rd Stage Video
-    makeFitVideo(grayVideoName, fit3VideoName, ...
-        'perimeterFileName',perimeterFileName,...
-        'glintFileName',glintFileName,...
-        universalKeyValues{:},sessionKeyValues{:});
+%     % Deinterlace
+%     deinterlaceVideo(convertedVideoName, grayVideoName, ...
+%         universalKeyValues{:},sessionKeyValues{:});
+%     
+%     % Glint
+%     findGlint(grayVideoName, glintFileName, ...
+%         universalKeyValues{:},sessionKeyValues{:});
+%     
+%     % Perimeter
+%     findPupilPerimeter(grayVideoName, perimeterFileName, ...
+%         universalKeyValues{:},sessionKeyValues{:});
+% 
+%     % 3rd Stage Video
+%     makeFitVideo(grayVideoName, fit3VideoName, ...
+%         'perimeterFileName',perimeterFileName,...
+%         'glintFileName',glintFileName,...
+%         universalKeyValues{:},sessionKeyValues{:});
      
 %      % Control
 %      makeControlFile(controlFileName, perimeterFileName, glintFileName, ...

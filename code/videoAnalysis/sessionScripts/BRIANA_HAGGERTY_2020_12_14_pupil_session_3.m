@@ -1,4 +1,4 @@
-%% GLAR_briana_2020_12_01_pupil_session_2
+%% BRIANA HAGGERTY_2020_12_14_pupil_session_3
 %
 % The video analysis pre-processing pipeline for a MTRP session.
 %
@@ -15,9 +15,9 @@
 %% Session parameters
 
 % Subject and session params.
-pathParams.Subject = 'GLAR_briana';
-pathParams.Date = '2020-12-01';
-pathParams.Session = 'session_2';
+pathParams.Subject = 'BRIANA HAGGERTY';
+pathParams.Date = '2020-12-14';
+pathParams.Session = 'session_3';
 
 %% Analysis Notes
 
@@ -28,7 +28,7 @@ pathParams.Session = 'session_2';
 
 %% Videos
 % vids = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-vids = 1:75;
+vids = 1:42;
 
 videoNameStems = {};
 for ii = vids

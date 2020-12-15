@@ -142,7 +142,8 @@ for tt = 1:length(trialTypes)
         
         % Get the mean and SEM of the response for this trial type
         yMean = nanmean(squeeze(data(tt,:,:)));
-        ySEM = nanstd(squeeze(data(tt,:,:))) / sqrt(length(idx));
+        ySamples = sum(~isnan(squeeze(data(tt,:,:))));
+        ySEM = nanstd(squeeze(data(tt,:,:))) ./ sqrt(ySamples);
         
         % Set the first second of the response to a value of zero
         yMean = yMean - nanmean(yMean(1:60));
