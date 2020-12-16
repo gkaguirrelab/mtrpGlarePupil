@@ -37,10 +37,10 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [140   302   136   136];
+pupilFrameMask = [165   346   164   179];
 
 % Pupil settings
-pupilCircleThreshSet = 0.1;
+pupilCircleThreshSet = 0.05;
 pupilRangeSets = [75 250];
 ellipseEccenLBUB = [0 0.88];
 ellipseAreaLB = 0;
