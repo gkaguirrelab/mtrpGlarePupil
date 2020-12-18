@@ -43,25 +43,18 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
 %
 % Examples:
 %{
-    observerID = 'GLAR_briana';
-    dateID = '2020-12-01';
-    sessionName = 'session_1'
+    observerID = 'BRIANA HAGGERTY';
+    dateID = '2020-12-14';
+    sessionName = {'session_1','session_2','session_4','session_4'};
     experimentName = 'pupilGlare_01';
-    T = readtable('BRIANA HAGGERTY_11.txt');
-    trials(strcmp(T.Condition,'Glow'))=1;
-    trials(strcmp(T.Condition,'Halo'))=2;
-    trials(strcmp(T.Condition,'Uniform'))=3;
-    [ data ] = averageAcrossTrials( observerID, dateID, sessionName, trials, 'experimentName', experimentName );
-%}
-%{
-    observerID = 'GLAR_briana';
-    dateID = '2020-12-01';
-    sessionName = 'session_2'
-    experimentName = 'pupilGlare_01';
-    T = readtable('BRIANA HAGGERTY_12.txt');
-    trials(strcmp(T.Condition,'Glow'))=1;
-    trials(strcmp(T.Condition,'Halo'))=2;
-    trials(strcmp(T.Condition,'Uniform'))=3;
+
+    for ss=1:4
+        T = readtable(sprintf('/Users/aguirre/Dropbox (Aguirre-Brainard Lab)/MTRP_data/Exp_002GN/Subject_BRIANA HAGGERTY/BRIANA HAGGERTY_%d.txt',ss));
+        trials{ss}(strcmp(T.Condition,'Glow'))=1;
+        trials{ss}(strcmp(T.Condition,'Halo'))=2;
+        trials{ss}(strcmp(T.Condition,'Uniform'))=3;
+    end
+
     [ data ] = averageAcrossTrials( observerID, dateID, sessionName, trials, 'experimentName', experimentName );
 %}
 
@@ -73,8 +66,8 @@ p = inputParser; p.KeepUnmatched = false;
 % Required
 p.addRequired('observerID',@ischar);
 p.addRequired('dateID',@ischar);
-p.addRequired('sessionName',@ischar);
-p.addRequired('trials',@isvector);
+p.addRequired('sessionName',@(x)(isvector(x) | iscell(x)));
+p.addRequired('trials',@(x)(isvector(x) | iscell(x)));
 
 % Optional
 p.addParameter('experimentName','pupilGlare_01',@ischar);
@@ -91,46 +84,61 @@ p.addParameter('plotLabels',{'glow','halo','uniform'},@iscell);
 p.parse(observerID, dateID, sessionName, trials, varargin{:})
 
 
-%% Load the trial order
-% Write code here to load and process the output data file from metropsis.
-trialTypes = unique(trials);
-
+%% Determine the number of sessions to process
+% Also adjust passed variable types
+if iscell(sessionName)
+    nSessions = length(sessionName);
+else
+    nSessions = 1;
+    sessionName = {sessionName};
+    trials = {trials};
+end
 
 %% Prepare the variables and figures
-data = [];
 figHandle = [];
+
+%% Get the trialTypes from the first session
+trialTypes = unique(trials{1});
+
 
 %% Average pupil responses by trial type
 for tt = 1:length(trialTypes)
     
-    idx = find(trials == trialTypes(tt));
+    data = [];
     
-    for ii = 1:length(idx)
+    %% Loop over sessions
+    for ss = 1:nSessions
         
-        % Load this puilData file
-        trialName = sprintf('trial_%02d_pupil.mat',idx(ii));
-        pupilDataFile = fullfile(...
-            p.Results.dropBoxBaseDir,...
-            p.Results.processingDir,...
-            p.Results.experimentName,...
-            observerID,dateID,sessionName,...
-            trialName );
-        load(pupilDataFile,'pupilData');
+        % Get the trials for this sessions
+        idx = find(trials{ss} == trialTypes(tt));
         
-        % Obtain the pupil area vector, filter blinks, convert to % change
-        area = pupilData.initial.ellipses.values(:,3);
-        rmse = pupilData.initial.ellipses.RMSE;
-        badIdx = rmse > p.Results.rmseThresh;
-        for rr = -p.Results.blinkFrameBuffer:p.Results.blinkFrameBuffer
-            area( circshift(badIdx,rr) ) = nan;
+        for ii = 1:length(idx)
+            
+            % Load this puilData file
+            trialName = sprintf('trial_%02d_pupil.mat',idx(ii));
+            pupilDataFile = fullfile(...
+                p.Results.dropBoxBaseDir,...
+                p.Results.processingDir,...
+                p.Results.experimentName,...
+                observerID,dateID,sessionName{ss},...
+                trialName );
+            load(pupilDataFile,'pupilData');
+            
+            % Obtain the pupil area vector, filter blinks, convert to % change
+            area = pupilData.initial.ellipses.values(:,3);
+            rmse = pupilData.initial.ellipses.RMSE;
+            badIdx = rmse > p.Results.rmseThresh;
+            for rr = -p.Results.blinkFrameBuffer:p.Results.blinkFrameBuffer
+                area( circshift(badIdx,rr) ) = nan;
+            end
+            meanArea = nanmean(area);
+            area = (area - meanArea)/meanArea;
+            
+            % Add this trial data to the data array
+            data(end+1,:) = area;
         end
-        meanArea = nanmean(area);
-        area = (area - meanArea)/meanArea;
         
-        % Add this trial data to the data array
-        data(tt,ii,:) = area;
     end
-    
     
     %% Create a plot if requested
     if p.Results.createPlot
@@ -141,9 +149,9 @@ for tt = 1:length(trialTypes)
         end
         
         % Get the mean and SEM of the response for this trial type
-        yMean = nanmean(squeeze(data(tt,:,:)));
-        ySamples = sum(~isnan(squeeze(data(tt,:,:))));
-        ySEM = nanstd(squeeze(data(tt,:,:))) ./ sqrt(ySamples);
+        yMean = nanmean(data);
+        ySamples = sum(~isnan(data));
+        ySEM = nanstd(data) ./ sqrt(ySamples);
         
         % Set the first second of the response to a value of zero
         yMean = yMean - nanmean(yMean(1:60));
