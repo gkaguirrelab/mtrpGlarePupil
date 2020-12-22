@@ -45,7 +45,7 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
 %{
     observerID = 'BRIANA HAGGERTY';
     dateID = '2020-12-14';
-    sessionName = {'session_1','session_2','session_4','session_4'};
+    sessionName = {'session_1','session_2','session_3','session_4'};
     experimentName = 'pupilGlare_01';
 
     for ss=1:4
