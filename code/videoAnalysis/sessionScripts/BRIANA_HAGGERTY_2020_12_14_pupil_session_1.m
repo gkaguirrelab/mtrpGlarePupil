@@ -10,8 +10,6 @@
 % For the glint, put a tight box around the glint. For the pupil, define a
 % mask area that safely contains the pupil at its most dilated.
 
-
-
 %% Session parameters
 
 % Subject and session params.
@@ -23,7 +21,7 @@ pathParams.Session = 'session_1';
 
 %% Videos
 % vids = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-vids = 1:42;
+vids = [41];
 
 videoNameStems = {};
 for ii = vids
@@ -37,11 +35,11 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [165   346   164   179];
+pupilFrameMask = [148   352   167   183];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
-pupilRangeSets = [75 250];
+pupilRangeSets = [40 60];
 ellipseEccenLBUB = [0 0.88];
 ellipseAreaLB = 0;
 ellipseAreaUP = 90000;

@@ -42,7 +42,7 @@ pupilFrameMask = [141   312   183   203];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
-pupilRangeSets = [75 250];
+pupilRangeSets = [40 60];
 ellipseEccenLBUB = [0 0.88];
 ellipseAreaLB = 0;
 ellipseAreaUP = 90000;

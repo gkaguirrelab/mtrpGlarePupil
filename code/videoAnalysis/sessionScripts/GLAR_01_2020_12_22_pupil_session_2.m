@@ -1,4 +1,4 @@
-%% BRIANA HAGGERTY_2020_12_14_pupil_session_4
+%% GLAR_01_2020_12_22_pupil_session_2
 %
 % The video analysis pre-processing pipeline for a MTRP session.
 %
@@ -15,19 +15,16 @@
 %% Session parameters
 
 % Subject and session params.
-pathParams.Subject = 'BRIANA HAGGERTY';
-pathParams.Date = '2020-12-14';
-pathParams.Session = 'session_4';
+pathParams.Subject = 'GLAR_01';
+pathParams.Date = '2020-12-22';
+pathParams.Session = 'session_2';
 
 %% Analysis Notes
-% Default pupil range [75 250], cut pi, min radius proportion 0.9
-% Pupil range [50 60] for trials [3, 20, 23, 26, 28, 30, 31, 32, 35, 36, 38, 39]
-% Trial 23, set cut to 5*pi/4 (top left) and minRadiusProportion to 0.5
-% Pupil range [60 80] for trial 29.
+
 
 %% Videos
-%vids = [3, 20, 23, 26, 28, 29, 30, 31, 32, 35, 36, 38, 39];
-vids = 29;
+% vids = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+vids = 1:42;
 
 videoNameStems = {};
 for ii = vids
@@ -41,11 +38,11 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [158   320   161   194];
+pupilFrameMask = [141   312   183   203];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
-pupilRangeSets = [60 80];
+pupilRangeSets = [40 60];
 ellipseEccenLBUB = [0 0.88];
 ellipseAreaLB = 0;
 ellipseAreaUP = 90000;

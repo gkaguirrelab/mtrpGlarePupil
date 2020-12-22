@@ -20,14 +20,13 @@ pathParams.Date = '2020-12-14';
 pathParams.Session = 'session_4';
 
 %% Analysis Notes
-% Default pupil range [75 250], cut pi, min radius proportion 0.9
-% Pupil range [50 60] for trials [3, 20, 23, 26, 28, 30, 31, 32, 35, 36, 38, 39]
-% Trial 23, set cut to 5*pi/4 (top left) and minRadiusProportion to 0.5
-% Pupil range [60 80] for trial 29.
+% Default pupil range [75 250]
+% Pupil range [50 60] for trials [3, 20, 23, 26, 28, 29, 30, 31, 32, 35, 36, 38, 39]
+
 
 %% Videos
-%vids = [3, 20, 23, 26, 28, 29, 30, 31, 32, 35, 36, 38, 39];
-vids = 29;
+vids = [3, 20, 23, 26, 28, 29, 30, 31, 32, 35, 36, 38, 39];
+% vids = 1:42;
 
 videoNameStems = {};
 for ii = vids
@@ -45,7 +44,7 @@ pupilFrameMask = [158   320   161   194];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
-pupilRangeSets = [60 80];
+pupilRangeSets = [50 60];
 ellipseEccenLBUB = [0 0.88];
 ellipseAreaLB = 0;
 ellipseAreaUP = 90000;
