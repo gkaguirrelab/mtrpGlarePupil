@@ -49,7 +49,7 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
     experimentName = 'pupilGlare_01';
 
     for ss=1:4
-        T = readtable(sprintf('/Users/aguirre/Dropbox (Aguirre-Brainard Lab)/MTRP_data/Exp_002GN/Subject_BRIANA HAGGERTY/BRIANA HAGGERTY_%d.txt',ss));
+        T = readtable(sprintf(['/Users/aguirre/Dropbox (Aguirre-Brainard Lab)/MTRP_data/Exp_002GN/Subject_' observerID '/' observerID '_%d.txt'],ss));
         trials{ss}(strcmp(T.Condition,'Glow'))=1;
         trials{ss}(strcmp(T.Condition,'Halo'))=2;
         trials{ss}(strcmp(T.Condition,'Uniform'))=3;
@@ -64,7 +64,7 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
     experimentName = 'pupilGlare_01';
 
     for ss=1:4
-        T = readtable(sprintf('/Users/aguirre/Dropbox (Aguirre-Brainard Lab)/MTRP_data/Exp_002GN/Subject_BRIANA HAGGERTY/BRIANA HAGGERTY_%d.txt',ss));
+        T = readtable(sprintf(['/Users/aguirre/Dropbox (Aguirre-Brainard Lab)/MTRP_data/Exp_002GN/Subject_' observerID '/' observerID '_%d.txt'],ss));
         trials{ss}(strcmp(T.Condition,'Glow'))=1;
         trials{ss}(strcmp(T.Condition,'Halo'))=2;
         trials{ss}(strcmp(T.Condition,'Uniform'))=3;
