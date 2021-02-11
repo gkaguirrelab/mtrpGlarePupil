@@ -27,6 +27,9 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
 %                           this value are discarded.
 %  'blinkFrameBuffer'     - Scalar. This many frames on either side of
 %                           a frame above the rmseThresh and discarded.
+%  'nFramesBaseline'      - Scalar. The number of frames at the start of a
+%                           the trial to be used as the baseline prior to
+%                           the start of the stimulus.
 %  'createPlot'           - Logical. Do we create a plot of the data?
 %  'plotColors','plotLabels' - Cell array. Colors and labels for the trial
 %                           types that are shown in the plot.
@@ -60,7 +63,7 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
 %{
     observerID = 'GLAR_01';
     dateID = '2020-12-22';
-    sessionName = {'session_1','session_2'};
+    sessionName = {'session_1','session_2','session_3','session_4'};
     experimentName = 'pupilGlare_01';
 
     for ss=1:4
@@ -90,6 +93,7 @@ p.addParameter('dataDir',fullfile('MTRP_data'),@ischar);
 p.addParameter('processingDir',fullfile('MTRP_processing'),@ischar);
 p.addParameter('rmseThresh',0.5,@isscalar);
 p.addParameter('blinkFrameBuffer',2,@isscalar);
+p.addParameter('nFramesBaseline',60,@isscalar);
 p.addParameter('createPlot',true,@islogical);
 p.addParameter('plotColors',{'r',[0.5 0.5 0.5],'k'},@iscell);
 p.addParameter('plotLabels',{'glow','halo','uniform'},@iscell);
@@ -167,8 +171,8 @@ for tt = 1:length(trialTypes)
         ySamples = sum(~isnan(data));
         ySEM = nanstd(data) ./ sqrt(ySamples);
         
-        % Set the first second of the response to a value of zero
-        yMean = yMean - nanmean(yMean(1:60));
+        % Set the initial baseline of the response to a value of zero
+        yMean = yMean - nanmean(yMean(1:p.Results.nFramesBaseline));
         
         % Set the x temporal support
         xVals = (1:length(yMean))/60;
