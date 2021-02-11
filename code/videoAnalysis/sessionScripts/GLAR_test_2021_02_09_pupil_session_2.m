@@ -18,12 +18,9 @@ pathParams.Date = '2021-02-09';
 pathParams.Session = 'session_2';
 
 %% Analysis Notes
-% pupilRangeSets default = [40 60]
-% pupilRangeSets for vids = [2, 8, 9, 10, 12, 14, 22, 33, 34, 38] = [40 50]
 
 %% Videos
-vids = [2, 8, 9, 10, 12, 14, 22, 33, 34, 38];
-% vids = 1:42;
+vids = 1:42;
 
 videoNameStems = {};
 for ii = vids
@@ -37,7 +34,7 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [119   195   257   301];
+pupilFrameMask = [251   350   139   181];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
