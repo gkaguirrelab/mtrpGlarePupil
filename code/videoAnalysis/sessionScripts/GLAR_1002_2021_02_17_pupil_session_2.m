@@ -34,7 +34,7 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [251   350   139   181];
+pupilFrameMask = [117   295   290   283];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
@@ -45,7 +45,7 @@ ellipseAreaUP = 90000;
 pupilGammaCorrection = 0.75;
 
 % Glint settings
-glintPatchRadius = 45;
+glintPatchRadius = 1;
 glintThreshold = 0.4;
 
 % Control stage values (after the 3th before the 6th stage)

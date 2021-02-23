@@ -45,7 +45,7 @@ ellipseAreaUP = 90000;
 pupilGammaCorrection = 0.75;
 
 % Glint settings
-glintPatchRadius = 45;
+glintPatchRadius = 1;
 glintThreshold = 0.4;
 
 % Control stage values (after the 3th before the 6th stage)
