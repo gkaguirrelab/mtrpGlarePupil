@@ -34,7 +34,7 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [116   295   297   282];
+pupilFrameMask = [196   387   163   142];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
