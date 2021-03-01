@@ -1,4 +1,4 @@
-%% GLAR_1005_2021-02-23_pupil_session_2
+%% GLAR_1005_2021-02-25_pupil_session_2
 %
 % The video analysis pre-processing pipeline for a MTRP session.
 %
@@ -34,7 +34,7 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [175   381   179   148];
+pupilFrameMask = [ 134   297   236   258];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
