@@ -20,7 +20,7 @@ pathParams.Session = 'session_3';
 %% Analysis Notes
 
 %% Videos
-vids = 1:42;
+vids = 1:7;
 
 videoNameStems = {};
 for ii = vids
