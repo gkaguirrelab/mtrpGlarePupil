@@ -1,4 +1,4 @@
-%% GLAR_1008_2021-03-04_pupil_session_2
+%% GLAR_1009_2021-03-23_pupil_session_3
 %
 % The video analysis pre-processing pipeline for a MTRP session.
 %
@@ -13,9 +13,9 @@
 %% Session parameters
 
 % Subject and session params.
-pathParams.Subject = 'GLAR_1008';
-pathParams.Date = '2021-03-04';
-pathParams.Session = 'session_2';
+pathParams.Subject = 'GLAR_1009';
+pathParams.Date = '2021-03-23';
+pathParams.Session = 'session_3';
 
 %% Analysis Notes
 
@@ -34,7 +34,7 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [92   235   295   318];
+pupilFrameMask = [131   346   268   235];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
@@ -51,9 +51,9 @@ glintThreshold = 0.4;
 % Control stage values (after the 3th before the 6th stage)
 % Cut settings: 0 for buttom cut, pi/2 for right, pi for top, 3*pi/4 for
 % left
-candidateThetas = 8*pi/6;
-minRadiusProportion = 0.75;
-cutErrorThreshold = 0.15;
+candidateThetas = pi;
+minRadiusProportion = 0.9;
+cutErrorThreshold = 0.25;
 %% Loop through video name stems get each video and its corresponding masks
 for ii = 1:numel(vids)
     pupilCircleThresh = pupilCircleThreshSet;
