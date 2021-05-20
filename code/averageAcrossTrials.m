@@ -35,12 +35,14 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
 %                           types that are shown in the plot.
 %
 % Outputs:
-%   data                  - Matrix of dimensions [a,b], where a is the
-%                           number of trials, and b is the number of time
-%                           samples per trial. The matrix will contain nans
-%                           for censored time points with bad ellipse fits,
-%                           or if there are fewer trials of one type or
-%                           another.
+%   data                  - Cell array. Each entry in the cell is a matrix 
+%                           of dimensions [a,b], where a is the number of
+%                           trials, and b is the number of time samples per
+%                           trial. The matrix will contain nans for
+%                           censored time points with bad ellipse fits, or
+%                           if there are fewer trials of one type or
+%                           another. There is one cell entry in data for
+%                           each cell entry passed in the trials variable.
 %   figHandle             - Handle to the plot.
 %
 % Examples:
@@ -117,11 +119,13 @@ figHandle = [];
 %% Get the trialTypes from the first session
 trialTypes = unique(trials{1});
 
+%% Create a variable to hold the data
+data = {};
 
 %% Average pupil responses by trial type
 for tt = 1:length(trialTypes)
     
-    data = [];
+    trialData = [];
     
     %% Loop over sessions
     for ss = 1:nSessions
@@ -152,7 +156,7 @@ for tt = 1:length(trialTypes)
             area = (area - meanArea)/meanArea;
             
             % Add this trial data to the data array
-            data(end+1,:) = area;
+            trialData(end+1,:) = area;
         end
         
     end
@@ -166,9 +170,9 @@ for tt = 1:length(trialTypes)
         end
         
         % Get the mean and SEM of the response for this trial type
-        yMean = nanmean(data);
-        ySamples = sum(~isnan(data));
-        ySEM = nanstd(data) ./ sqrt(ySamples);
+        yMean = nanmean(trialData);
+        ySamples = sum(~isnan(trialData));
+        ySEM = nanstd(trialData) ./ sqrt(ySamples);
         
         % Set the initial baseline of the response to a value of zero
         yMean = yMean - nanmean(yMean(1:p.Results.nFramesBaseline));
@@ -190,6 +194,9 @@ for tt = 1:length(trialTypes)
         end
         
     end
+    
+    %% Add the trialData to the data variable
+    data{tt} = trialData;
     
 end
 
