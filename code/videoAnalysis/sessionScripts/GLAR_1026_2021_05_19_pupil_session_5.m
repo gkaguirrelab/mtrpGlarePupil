@@ -1,4 +1,4 @@
-%% GLAR_1026_2021-05-19_pupil_session_4
+%% GLAR_1026_2021-05-19_pupil_session_5
 %
 % The video analysis pre-processing pipeline for a MTRP session.
 %
@@ -15,7 +15,7 @@
 % Subject and session params.
 pathParams.Subject = 'GLAR_1026';
 pathParams.Date = '2021-05-19';
-pathParams.Session = 'session_4';
+pathParams.Session = 'session_5';
 
 %% Analysis Notes
 
