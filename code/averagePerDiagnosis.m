@@ -10,7 +10,10 @@ function [ data, figHandle ] = averagePerDiagnosis( diagnosis, varargin )
 %   same POEM diagnosis obtained as part of the Metropsis Glare experiment
 %
 % Inputs:
-%   diagnosis            - Char vector.
+%   diagnosis            - Char vector. Must be one of the following: 'mwa'
+%                          for migraine with aura subjects, 'mwoa' for 
+%                          migraine without aura subjects, or 'haf' for 
+%                          control subjects.
 %
 % Optional key/value pairs:
 %  'experimentName'       - Char vector.
@@ -65,12 +68,13 @@ GLAR_1020 = {'GLAR_1020', '2021-05-06', {'session_1','session_2','session_3','se
 GLAR_1021 = {'GLAR_1021', '2021-05-06', {'session_1','session_2','session_3','session_4'}};
 GLAR_1022 = {'GLAR_1022', '2021-05-10', {'session_1','session_2','session_3','session_4'}};
 GLAR_1023 = {'GLAR_1023', '2021-05-13', {'session_1','session_2','session_3','session_4'}};
-GLAR_1025 = {'GLAR_1025', '2021-05-19', {'session_1','session_2','session_3','session_4'}};
+GLAR_1025 = {'GLAR_1025', '2021-05-18', {'session_1','session_2','session_3','session_4'}};
+GLAR_1026 = {'GLAR_1026', '2021-05-19', {'session_1','session_2','session_3','session_5'}};
 
 % subject POEM category
 mwaSubjects = {GLAR_1010, GLAR_1011, GLAR_1012, GLAR_1013, GLAR_1014,...
     GLAR_1015, GLAR_1016, GLAR_1017, GLAR_1020, GLAR_1021};
-mwoaSubjects = {GLAR_1023, GLAR_1025};
+mwoaSubjects = {GLAR_1023, GLAR_1025, GLAR_1026};
 hafSubjects = {GLAR_1001, GLAR_1002, GLAR_1003, GLAR_1004, GLAR_1005,...
     GLAR_1006, GLAR_1007, GLAR_1008, GLAR_1009, GLAR_1022};
 
@@ -98,20 +102,22 @@ p.parse(diagnosis, varargin{:})
 % select POEM category
 if strcmp(diagnosis,'mwa') 
     pC = mwaSubjects;
-    groupName = 'Migraine with aura';
+    groupName = 'Average across migraine with aura subjects';
 elseif strcmp(diagnosis,'mwoa')
     pC = mwoaSubjects;
-    groupName = 'Migraine without aura';
+    groupName = 'Average across migraine without aura subjects';
 elseif strcmp(diagnosis,'haf')
     pC = hafSubjects;
-    groupName = 'HaF control';
+    groupName = 'Average across headache-free control subjects';
 else 
     error('Diagnosis string input must be either mwa, mwoa, or haf.');
 end
 
 %% Prepare the variables and figures
 figHandle = [];
-data = [];
+glow = [];
+halo = [];
+uniform = [];
 
 %% process trials for each subject
 
@@ -130,8 +136,10 @@ for i = 1:length(pC)
     end
     [subData] = averageAcrossTrials(observerID, dateID, sessionName, trials, varargin{:});
     
-    % add subject data to across subject matrix
-    data = [data subData];
+    % add subject data to across subject matrices
+    glow = [glow; subData{1}];
+    halo = [halo; subData{2}];
+    uniform = [uniform; subData{3}];
 end
 set(0,'DefaultFigureVisible','on');
 
@@ -140,11 +148,11 @@ set(0,'DefaultFigureVisible','on');
 if p.Results.createPlot
 
     figHandle = figure();
-    trialTypes = unique(trials{1});
+    trialTypes = {glow, halo, uniform};
 
     for tt = 1:length(trialTypes)
 
-        typeData = data(tt);
+        typeData = trialTypes{tt};
 
         % Get the mean and SEM of the response for each trial type
         yMean = nanmean(typeData);
