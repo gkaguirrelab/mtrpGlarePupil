@@ -35,9 +35,8 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
 %                           types that are shown in the plot.
 %
 % Outputs:
-%   data                  - Matrix of dimensions [a,b,c], where a is the
-%                           number of trial types, b is the number of
-%                           trials of each type, an c is the number of time
+%   data                  - Matrix of dimensions [a,b], where a is the
+%                           number of trials, and b is the number of time
 %                           samples per trial. The matrix will contain nans
 %                           for censored time points with bad ellipse fits,
 %                           or if there are fewer trials of one type or
