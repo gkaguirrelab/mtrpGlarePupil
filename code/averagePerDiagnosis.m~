@@ -140,19 +140,17 @@ for i = 1:length(pC)
     [subData] = averageAcrossTrials(observerID, dateID, sessionName, trials, varargin{:});
     
     % Get the mean and SEM of the response for each trial type
-    glowMean = nanmean(subData{1});
-    haloMean = nanmean(subData{2});
-    uniformMean = nanmean(subData{3});
+    glowMean = nanmean(subdata{1});
+    haloMean = nanmean(subdata{2});
+    uniformMean = nanmean(subdata{3});
 
     % Set the initial baseline of the response to a value of zero
     glowMean = glowMean - nanmean(glowMean(1:p.Results.nFramesBaseline));
-    haloMean = haloMean - nanmean(haloMean(1:p.Results.nFramesBaseline));
-    uniformMean = uniformMean - nanmean(uniformMean(1:p.Results.nFramesBaseline));
     
     % add subject averages to respective POEM category matrices
-    glow = [glow; glowMean];
-    halo = [halo; haloMean];
-    uniform = [uniform; uniformMean];
+    glow = [glow; subData{1}];
+    halo = [halo; subData{2}];
+    uniform = [uniform; subData{3}];
 end
 set(0,'DefaultFigureVisible','on');
 
@@ -172,6 +170,9 @@ if p.Results.createPlot
         ySamples = sum(~isnan(typeData));
         ySEM = nanstd(typeData) ./ sqrt(ySamples);
 
+        % Set the initial baseline of the response to a value of zero
+        yMean = yMean - nanmean(yMean(1:p.Results.nFramesBaseline));
+
         % Set the x temporal support
         xVals = (1:length(yMean))/60;
 
@@ -186,7 +187,7 @@ if p.Results.createPlot
             title(groupName,'interpreter', 'none');
             ylabel('Proportion change pupil area');
             xlabel('Time [secs]');
-            ylim([-0.15 0.05])
+            ylim([-0.14 0.05])
         end
 
     end
