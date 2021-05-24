@@ -128,9 +128,10 @@ for i = 1:length(pC)
     observerID = subject{1};
     dateID = subject{2};
     sessionName = subject{3};
-    experimentName = 'pupilGlare_01';
+
     for ss=1:4
-        T = readtable(sprintf(['/Users/brianahaggerty/Dropbox (Aguirre-Brainard Lab)/MTRP_data/Exp_002GN/Subject_' observerID '/' observerID '_%d.txt'],ss));
+        fileName = fullfile(p.Results.dropBoxBaseDir,sprintf(['MTRP_data/Exp_002GN/Subject_' observerID '/' observerID '_%d.txt'],ss));
+        T = readtable(fileName);
         trials{ss}(strcmp(T.Condition,'Glow'))=1;
         trials{ss}(strcmp(T.Condition,'Halo'))=2;
         trials{ss}(strcmp(T.Condition,'Uniform'))=3;
