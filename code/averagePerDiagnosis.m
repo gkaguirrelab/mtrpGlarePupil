@@ -176,6 +176,7 @@ if p.Results.createPlot
             title(groupName,'interpreter', 'none');
             ylabel('Proportion change pupil area');
             xlabel('Time [secs]');
+            ylim([-0.14 0.05])
         end
 
     end
