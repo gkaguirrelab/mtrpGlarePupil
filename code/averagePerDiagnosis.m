@@ -6,13 +6,13 @@ function [ data, figHandle ] = averagePerDiagnosis( diagnosis, varargin )
 %   [ data, figHandle ] = averagePerDiagnosis( diagnosis, varargin )
 %
 % Description:
-%   Loads, cleans, and averages pupil responses across subjects with the 
+%   Loads, cleans, and averages pupil responses across subjects with the
 %   same POEM diagnosis obtained as part of the Metropsis Glare experiment
 %
 % Inputs:
 %   diagnosis            - Char vector. Must be one of the following: 'mwa'
-%                          for migraine with aura subjects, 'mwoa' for 
-%                          migraine without aura subjects, or 'haf' for 
+%                          for migraine with aura subjects, 'mwoa' for
+%                          migraine without aura subjects, or 'haf' for
 %                          control subjects.
 %
 % Optional key/value pairs:
@@ -85,13 +85,7 @@ p = inputParser; p.KeepUnmatched = false;
 p.addRequired('diagnosis',@ischar);
 
 % Optional
-p.addParameter('experimentName','pupilGlare_01',@ischar);
 p.addParameter('dropBoxBaseDir',getpref('mtrpGlarePupil','dropboxBaseDir'),@ischar);
-p.addParameter('dataDir',fullfile('MTRP_data'),@ischar);
-p.addParameter('processingDir',fullfile('MTRP_processing'),@ischar);
-p.addParameter('rmseThresh',0.5,@isscalar);
-p.addParameter('blinkFrameBuffer',2,@isscalar);
-p.addParameter('nFramesBaseline',60,@isscalar);
 p.addParameter('createPlot',true,@islogical);
 p.addParameter('plotColors',{'r',[0.5 0.5 0.5],'k'},@iscell);
 p.addParameter('plotLabels',{'glow','halo','uniform'},@iscell);
@@ -100,7 +94,7 @@ p.addParameter('plotLabels',{'glow','halo','uniform'},@iscell);
 p.parse(diagnosis, varargin{:})
 
 % select POEM category
-if strcmp(diagnosis,'mwa') 
+if strcmp(diagnosis,'mwa')
     pC = mwaSubjects;
     groupName = 'Average across migraine with aura subjects';
 elseif strcmp(diagnosis,'mwoa')
@@ -109,7 +103,7 @@ elseif strcmp(diagnosis,'mwoa')
 elseif strcmp(diagnosis,'haf')
     pC = hafSubjects;
     groupName = 'Average across headache-free control subjects';
-else 
+else
     error('Diagnosis string input must be either mwa, mwoa, or haf.');
 end
 
@@ -121,14 +115,21 @@ uniform = [];
 
 %% process trials for each subject
 
-set(0,'DefaultFigureVisible','off');
-for i = 1:length(pC)
+% Turn off a table loading warning
+warnState = warning();
+warning('off','MATLAB:table:ModifiedAndSavedVarnames');
+
+% Hide the figures as we make them
+%set(0,'DefaultFigureVisible','off');
+
+% Loop through the list of subjects
+for ii = 1:length(pC)
     % setup subject session information
-    subject = pC{i};
+    subject = pC{ii};
     observerID = subject{1};
     dateID = subject{2};
     sessionName = subject{3};
-
+    
     for ss=1:4
         fileName = fullfile(p.Results.dropBoxBaseDir,sprintf(['MTRP_data/Exp_002GN/Subject_' observerID '/' observerID '_%d.txt'],ss));
         T = readtable(fileName);
@@ -138,50 +139,47 @@ for i = 1:length(pC)
     end
     
     % get session data
-    [subData] = averageAcrossTrials(observerID, dateID, sessionName, trials, varargin{:});
+    [subData] = averageAcrossTrials(observerID, dateID, sessionName, trials, 'createPlot', false);
     
     % Get the mean and SEM of the response for each trial type
     glowMean = nanmean(subData{1});
     haloMean = nanmean(subData{2});
     uniformMean = nanmean(subData{3});
-
-    % Set the initial baseline of the response to a value of zero
-    glowMean = glowMean - nanmean(glowMean(1:p.Results.nFramesBaseline));
-    haloMean = haloMean - nanmean(haloMean(1:p.Results.nFramesBaseline));
-    uniformMean = uniformMean - nanmean(uniformMean(1:p.Results.nFramesBaseline));
     
     % add subject averages to respective POEM category matrices
     glow = [glow; glowMean];
     halo = [halo; haloMean];
     uniform = [uniform; uniformMean];
 end
-set(0,'DefaultFigureVisible','on');
+
+
+% Restore the warning state
+warning(warnState);
 
 %% create plot if requested
 
 if p.Results.createPlot
-
+    
     figHandle = figure();
     trialTypes = {glow, halo, uniform};
-
+    
     for tt = 1:length(trialTypes)
-
+        
         typeData = trialTypes{tt};
-
+        
         % Get the mean and SEM of the response for each trial type
         yMean = nanmean(typeData);
         ySamples = sum(~isnan(typeData));
         ySEM = nanstd(typeData) ./ sqrt(ySamples);
-
+        
         % Set the x temporal support
         xVals = (1:length(yMean))/60;
-
         % Plot
         plotHandles(tt) = plot(xVals,yMean,'-','Color',p.Results.plotColors{tt});
         hold on
         plot(xVals,yMean+ySEM,':','Color',p.Results.plotColors{tt});
         plot(xVals,yMean-ySEM,':','Color',p.Results.plotColors{tt});
-
+        
         if tt == length(trialTypes)
             legend(plotHandles,p.Results.plotLabels);
             title(groupName,'interpreter', 'none');
@@ -189,7 +187,7 @@ if p.Results.createPlot
             xlabel('Time [secs]');
             ylim([-0.15 0.05])
         end
-
+        
     end
 end
 

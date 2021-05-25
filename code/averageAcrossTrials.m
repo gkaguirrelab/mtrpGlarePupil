@@ -92,8 +92,8 @@ p.addParameter('experimentName','pupilGlare_01',@ischar);
 p.addParameter('dropBoxBaseDir',getpref('mtrpGlarePupil','dropboxBaseDir'),@ischar);
 p.addParameter('dataDir',fullfile('MTRP_data'),@ischar);
 p.addParameter('processingDir',fullfile('MTRP_processing'),@ischar);
-p.addParameter('rmseThresh',0.5,@isscalar);
-p.addParameter('blinkFrameBuffer',2,@isscalar);
+p.addParameter('rmseThresh',1.5,@isscalar);
+p.addParameter('blinkFrameBuffer',4,@isscalar);
 p.addParameter('nFramesBaseline',60,@isscalar);
 p.addParameter('createPlot',true,@islogical);
 p.addParameter('plotColors',{'r',[0.5 0.5 0.5],'k'},@iscell);
@@ -161,6 +161,11 @@ for tt = 1:length(trialTypes)
         
     end
     
+    % Set the initial baseline of the response to a value of zero
+    yMean = nanmean(trialData);
+    baseAdjust = nanmean(yMean(1:p.Results.nFramesBaseline));
+    trialData = trialData - baseAdjust;
+
     %% Create a plot if requested
     if p.Results.createPlot
         
@@ -173,10 +178,7 @@ for tt = 1:length(trialTypes)
         yMean = nanmean(trialData);
         ySamples = sum(~isnan(trialData));
         ySEM = nanstd(trialData) ./ sqrt(ySamples);
-        
-        % Set the initial baseline of the response to a value of zero
-        yMean = yMean - nanmean(yMean(1:p.Results.nFramesBaseline));
-        
+                
         % Set the x temporal support
         xVals = (1:length(yMean))/60;
         
