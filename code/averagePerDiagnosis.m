@@ -142,7 +142,7 @@ for ii = 1:length(pC)
     % get session data
     [subData] = averageAcrossTrials(observerID, dateID, sessionName, trials, 'createPlot', false);
     
-    % Get the mean and SEM of the response for each trial type
+    % Get the mean of the response for each trial type
     glowMean = nanmean(subData{1});
     haloMean = nanmean(subData{2});
     uniformMean = nanmean(subData{3});
