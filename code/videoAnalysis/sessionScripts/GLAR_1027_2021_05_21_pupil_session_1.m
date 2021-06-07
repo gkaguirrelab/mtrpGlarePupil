@@ -34,7 +34,7 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [143   298   227   264];
+pupilFrameMask = [76   116   279   407];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
@@ -52,8 +52,8 @@ glintThreshold = 0.4;
 % Cut settings: 0 for buttom cut, pi/2 for right, pi for top, 3*pi/4 for
 % left
 candidateThetas = pi;
-minRadiusProportion = 0.9;
-cutErrorThreshold = 0.25;
+minRadiusProportion = 0.5;
+cutErrorThreshold = 0.10;
 %% Loop through video name stems get each video and its corresponding masks
 for ii = 1:numel(vids)
     pupilCircleThresh = pupilCircleThreshSet;

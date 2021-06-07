@@ -94,7 +94,7 @@ p.addParameter('dataDir',fullfile('MTRP_data'),@ischar);
 p.addParameter('processingDir',fullfile('MTRP_processing'),@ischar);
 p.addParameter('rmseThresh',1.5,@isscalar);
 p.addParameter('blinkFrameBuffer',4,@isscalar);
-p.addParameter('nFramesBaseline',60,@isscalar);
+p.addParameter('nFramesBaseline',45,@isscalar);
 p.addParameter('createPlot',true,@islogical);
 p.addParameter('plotColors',{'r',[0.5 0.5 0.5],'k'},@iscell);
 p.addParameter('plotLabels',{'glow','halo','uniform'},@iscell);

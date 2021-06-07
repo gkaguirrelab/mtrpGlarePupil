@@ -72,13 +72,16 @@ GLAR_1025 = {'GLAR_1025', '2021-05-18', {'session_1','session_2','session_3','se
 GLAR_1026 = {'GLAR_1026', '2021-05-19', {'session_1','session_2','session_3','session_5'}};
 GLAR_1028 = {'GLAR_1028', '2021-05-24', {'session_1','session_2','session_3','session_4'}};
 GLAR_1029 = {'GLAR_1029', '2021-05-26', {'session_1','session_2','session_3','session_4'}};
+GLAR_1030 = {'GLAR_1030', '2021-05-28', {'session_1','session_2','session_3','session_4'}};
+GLAR_1031 = {'GLAR_1031', '2021-06-01', {'session_1','session_2','session_3','session_4'}};
 
 % subject POEM category
 mwaSubjects = {GLAR_1010, GLAR_1011, GLAR_1012, GLAR_1013, GLAR_1014,...
     GLAR_1015, GLAR_1016, GLAR_1017, GLAR_1020, GLAR_1021};
-mwoaSubjects = {GLAR_1023, GLAR_1025, GLAR_1026, GLAR_1028};
+mwoaSubjects = {GLAR_1023, GLAR_1025, GLAR_1026, GLAR_1028, GLAR_1030};
 hafSubjects = {GLAR_1001, GLAR_1002, GLAR_1003, GLAR_1004, GLAR_1005,...
-    GLAR_1006, GLAR_1007, GLAR_1008, GLAR_1009, GLAR_1022, GLAR_1029};
+    GLAR_1006, GLAR_1007, GLAR_1008, GLAR_1009, GLAR_1022, GLAR_1029,...
+    GLAR_1031};
 
 %% input parser
 p = inputParser; p.KeepUnmatched = false;
