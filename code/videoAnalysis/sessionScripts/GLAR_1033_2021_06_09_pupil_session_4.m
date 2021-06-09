@@ -1,4 +1,4 @@
-%% GLAR_1032_2021-06-04_pupil_session_3
+%% GLAR_1033_2021-06-09_pupil_session_4
 %
 % The video analysis pre-processing pipeline for a MTRP session.
 %
@@ -13,9 +13,9 @@
 %% Session parameters
 
 % Subject and session params.
-pathParams.Subject = 'GLAR_1032';
-pathParams.Date = '2021-06-04';
-pathParams.Session = 'session_3';
+pathParams.Subject = 'GLAR_1033';
+pathParams.Date = '2021-06-09';
+pathParams.Session = 'session_4';
 
 %% Analysis Notes
 
@@ -34,7 +34,7 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [153   340   188   213];
+pupilFrameMask = [178   224   185   334];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
