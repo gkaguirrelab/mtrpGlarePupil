@@ -104,13 +104,13 @@ p.parse(diagnosis, varargin{:})
 % select POEM category
 if strcmp(diagnosis,'mwa')
     pC = mwaSubjects;
-    groupName = strcat('Average across migraine with aura subjects, n=', int2str(length(pC)));
+    groupName = 'Average across migraine with aura subjects, n = ' + int2str(length(pC));
 elseif strcmp(diagnosis,'mwoa')
     pC = mwoaSubjects;
-    groupName = strcat('Average across migraine without aura subjects, n=', int2str(length(pC)));
+    groupName = 'Average across migraine without aura subjects, n = ' + int2str(length(pC));
 elseif strcmp(diagnosis,'haf')
     pC = hafSubjects;
-    groupName = strcat('Average across headache-free control subjects, n=', int2str(length(pC)));
+    groupName = 'Average across headache-free control subjects';
 else
     error('Diagnosis string input must be either mwa, mwoa, or haf.');
 end
