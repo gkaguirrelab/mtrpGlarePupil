@@ -77,10 +77,12 @@ GLAR_1031 = {'GLAR_1031', '2021-06-01', {'session_1','session_2','session_3','se
 GLAR_1032 = {'GLAR_1032', '2021-06-04', {'session_1','session_2','session_4','session_5'}};
 GLAR_1033 = {'GLAR_1033', '2021-06-09', {'session_1','session_2','session_3','session_4'}};
 GLAR_1034 = {'GLAR_1034', '2021-06-22', {'session_1','session_2','session_3','session_4'}};
+GLAR_1035 = {'GLAR_1035', '2021-06-25', {'session_1','session_2','session_3','session_4'}};
 
 % subject POEM category
 mwaSubjects = {GLAR_1010, GLAR_1011, GLAR_1012, GLAR_1013, GLAR_1014,...
-    GLAR_1015, GLAR_1016, GLAR_1017, GLAR_1020, GLAR_1021, GLAR_1034};
+    GLAR_1015, GLAR_1016, GLAR_1017, GLAR_1020, GLAR_1021, GLAR_1034,...
+    GLAR_1035};
 mwoaSubjects = {GLAR_1023, GLAR_1025, GLAR_1026, GLAR_1028, GLAR_1030...
     GLAR_1033};
 hafSubjects = {GLAR_1001, GLAR_1002, GLAR_1003, GLAR_1004, GLAR_1005,...
