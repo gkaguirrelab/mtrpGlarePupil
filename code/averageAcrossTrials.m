@@ -35,7 +35,7 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
 %                           types that are shown in the plot.
 %
 % Outputs:
-%   data                  - Cell array. Each entry in the cell is a matrix 
+%   data                  - Cell array. Each entry in the cell is a matrix
 %                           of dimensions [a,b], where a is the number of
 %                           trials, and b is the number of time samples per
 %                           trial. The matrix will contain nans for
@@ -130,12 +130,12 @@ for tt = 1:length(trialTypes)
     %% Loop over sessions
     for ss = 1:nSessions
         
-        % Get the trials for this sessions
+        % Get the trials for this session
         idx = find(trials{ss} == trialTypes(tt));
         
         for ii = 1:length(idx)
             
-            % Load this puilData file
+            % Identify this pupilData file
             trialName = sprintf('trial_%02d_pupil.mat',idx(ii));
             pupilDataFile = fullfile(...
                 p.Results.dropBoxBaseDir,...
@@ -143,20 +143,33 @@ for tt = 1:length(trialTypes)
                 p.Results.experimentName,...
                 observerID,dateID,sessionName{ss},...
                 trialName );
-            load(pupilDataFile,'pupilData');
             
-            % Obtain the pupil area vector, filter blinks, convert to % change
-            area = pupilData.initial.ellipses.values(:,3);
-            rmse = pupilData.initial.ellipses.RMSE;
-            badIdx = rmse > p.Results.rmseThresh;
-            for rr = -p.Results.blinkFrameBuffer:p.Results.blinkFrameBuffer
-                area( circshift(badIdx,rr) ) = nan;
+            % Check if the file exists
+            if isfile(pupilDataFile)
+                
+                % Load it and add it to the data array
+                load(pupilDataFile,'pupilData');
+                
+                % Obtain the pupil area vector, filter blinks, convert to % change
+                area = pupilData.initial.ellipses.values(:,3);
+                rmse = pupilData.initial.ellipses.RMSE;
+                badIdx = rmse > p.Results.rmseThresh;
+                for rr = -p.Results.blinkFrameBuffer:p.Results.blinkFrameBuffer
+                    area( circshift(badIdx,rr) ) = nan;
+                end
+                meanArea = nanmean(area);
+                area = (area - meanArea)/meanArea;
+                
+                % Add this trial data to the data array
+                trialData(end+1,:) = area;
+                
+            else
+                
+                % The file does not exist. Report this
+                str = ['Pupil file does not exist; skipping: ' pupilDataFile '\n'];
+                fprintf(str);
+                
             end
-            meanArea = nanmean(area);
-            area = (area - meanArea)/meanArea;
-            
-            % Add this trial data to the data array
-            trialData(end+1,:) = area;
         end
         
     end
@@ -165,7 +178,7 @@ for tt = 1:length(trialTypes)
     yMean = nanmean(trialData);
     baseAdjust = nanmean(yMean(1:p.Results.nFramesBaseline));
     trialData = trialData - baseAdjust;
-
+    
     %% Create a plot if requested
     if p.Results.createPlot
         
@@ -178,7 +191,7 @@ for tt = 1:length(trialTypes)
         yMean = nanmean(trialData);
         ySamples = sum(~isnan(trialData));
         ySEM = nanstd(trialData) ./ sqrt(ySamples);
-                
+        
         % Set the x temporal support
         xVals = (1:length(yMean))/60;
         
