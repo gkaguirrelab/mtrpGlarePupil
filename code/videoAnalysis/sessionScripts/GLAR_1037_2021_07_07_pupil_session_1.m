@@ -20,7 +20,7 @@ pathParams.Session = 'session_1';
 %% Analysis Notes
 
 %% Videos
-vids = 1:42;
+vids = [24];
 
 videoNameStems = {};
 for ii = vids
@@ -34,7 +34,7 @@ end
 
 % Mask bounds
 glintFrameMask = [97   307   332   283];
-pupilFrameMask = [188   365   184   203];
+pupilFrameMask = [142   394   158   154];
 
 % Pupil settings
 pupilCircleThreshSet = 0.05;
