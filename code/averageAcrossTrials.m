@@ -6,7 +6,13 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
 %
 % Description:
 %   Loads, cleans, and averages pupil responses obtained as part of the
-%   Metropsis Glare experiment
+%   Metropsis Glare experiment.
+%
+%   If there is a trial from a given session that is judged to be "bad" for
+%   some reason, it may be excluded from the analysis by changing the name
+%   of the pupil.mat data file for that trial. For example:
+%
+%       trial_41_pupil.mat  -->  trial_41_pupil_BAD.mat
 %
 % Inputs:
 %   observerID            - Char vector.
