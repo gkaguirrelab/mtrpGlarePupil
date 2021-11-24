@@ -177,12 +177,60 @@ end
 % Restore the warning state
 warning(warnState);
 
+
+%% Fit the response
+
+    trialTypes = {glow, halo, uniform};
+
+    temporalFit = tfeTPUP('verbosity','none');
+
+    % Set up some default params
+    [initialParams,vlbParams,vubParams] = temporalFit.defaultParams;
+    defaultParamsInfo.nInstances = 1;
+
+    vlbParams.paramMainMatrix(1) = -500;
+    vubParams.paramMainMatrix = [1000 500 30 0 0 0];
+
+    for tt = 1:length(trialTypes)
+        
+        typeData = trialTypes{tt};
+        
+        % create the packet for fitting
+        thePacket.response.values = nanmean(typeData)*100;
+        thePacket.response.timebase = (0:1/60:(length(thePacket.response.values)-1)/60)*1000;
+        thePacket.stimulus.timebase = thePacket.response.timebase;
+        thePacket.stimulus.values = zeros(size(thePacket.response.timebase));
+        thePacket.stimulus.values(30:60)=1;
+        thePacket.kernel = [];
+        thePacket.metaData = [];
+        
+        [paramsFit,fVal,modelResponseStruct{tt}] = ...
+            temporalFit.fitResponse(thePacket,...
+            'defaultParamsInfo', defaultParamsInfo,...
+            'initialParams',initialParams,...
+            'vlbParams',vlbParams,...
+            'vubParams',vubParams);
+
+    end
+
+
+    %% calculate the bootstrap auc
+    myFun = @(x) sum(nanmean(x));
+    
+    for tt = 1:length(trialTypes)
+        
+        typeData = trialTypes{tt};
+        bootstat = bootstrp(1000,myFun,typeData);
+        bootstat = sort(bootstat);
+        fprintf([p.Results.plotLabels{tt} ' mean (95 CI) = %2.2f [%2.2f to %2.2f]\n'],mean(bootstat),bootstat(25),bootstat(975));
+    end
+    
+    
 %% create plot if requested
 
 if p.Results.createPlot
     
     figHandle = figure();
-    trialTypes = {glow, halo, uniform};
     
     for tt = 1:length(trialTypes)
         
@@ -200,6 +248,7 @@ if p.Results.createPlot
         hold on
         plot(xVals,yMean+ySEM,':','Color',p.Results.plotColors{tt});
         plot(xVals,yMean-ySEM,':','Color',p.Results.plotColors{tt});
+        plot(xVals,modelResponseStruct{tt}.values/100,'-b');
         
         if tt == length(trialTypes)
             legend(plotHandles,p.Results.plotLabels);
