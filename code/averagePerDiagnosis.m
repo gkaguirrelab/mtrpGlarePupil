@@ -1,4 +1,4 @@
-function [ data, figHandle ] = averagePerDiagnosis( diagnosis, varargin )
+function [ bootData, figHandle ] = averagePerDiagnosis( varargin )
 % Load and average pupil responses across trials for MwA, MwoA, or HaF
 % subjects
 %
@@ -89,44 +89,32 @@ GLAR_1044 = {'GLAR_1044', '2021-11-03', {'session_1','session_2','session_3','se
 GLAR_1045 = {'GLAR_1045', '2021-11-16', {'session_1','session_2','session_3','session_4'}};
 
 % subject POEM category
-mwaSubjects = {GLAR_1010, GLAR_1011, GLAR_1012, GLAR_1013, GLAR_1014,...
+% Migraine with Aura
+subjectSets{1} = {GLAR_1010, GLAR_1011, GLAR_1012, GLAR_1013, GLAR_1014,...
     GLAR_1015, GLAR_1016, GLAR_1017, GLAR_1020, GLAR_1021, GLAR_1034,...
     GLAR_1035, GLAR_1038};
-mwoaSubjects = {GLAR_1023, GLAR_1025, GLAR_1026, GLAR_1028, GLAR_1030,...
+% Migraine without aura
+subjectSets{2} = {GLAR_1023, GLAR_1025, GLAR_1026, GLAR_1028, GLAR_1030,...
     GLAR_1033, GLAR_1040, GLAR_1041, GLAR_1042, GLAR_1043, GLAR_1044,...
     GLAR_1045};
-hafSubjects = {GLAR_1001, GLAR_1002, GLAR_1003, GLAR_1004, GLAR_1005,...
+% Headache free
+subjectSets{3} = {GLAR_1001, GLAR_1002, GLAR_1003, GLAR_1004, GLAR_1005,...
     GLAR_1006, GLAR_1007, GLAR_1008, GLAR_1009, GLAR_1022, GLAR_1029,...
     GLAR_1031, GLAR_1032, GLAR_1036, GLAR_1037};
 
 %% input parser
 p = inputParser; p.KeepUnmatched = false;
 
-% Required
-p.addRequired('diagnosis',@ischar);
-
 % Optional
 p.addParameter('dropBoxBaseDir',getpref('mtrpGlarePupil','dropboxBaseDir'),@ischar);
 p.addParameter('createPlot',true,@islogical);
 p.addParameter('plotColors',{'r',[0.5 0.5 0.5],'k'},@iscell);
 p.addParameter('plotLabels',{'glow','halo','uniform'},@iscell);
+p.addParameter('diagnosis',{'mwa','mwoa','haf'},@iscell);
 
 % parse
-p.parse(diagnosis, varargin{:})
+p.parse( varargin{:})
 
-% select POEM category
-if strcmp(diagnosis,'mwa')
-    pC = mwaSubjects;
-    groupName = strcat('Average across migraine with aura subjects, n=', int2str(length(pC)));
-elseif strcmp(diagnosis,'mwoa')
-    pC = mwoaSubjects;
-    groupName = strcat('Average across migraine without aura subjects, n=', int2str(length(pC)));
-elseif strcmp(diagnosis,'haf')
-    pC = hafSubjects;
-    groupName = strcat('Average across headache-free control subjects, n=', int2str(length(pC)));
-else
-    error('Diagnosis string input must be either mwa, mwoa, or haf.');
-end
 
 %% Prepare the variables and figures
 figHandle = [];
@@ -134,7 +122,7 @@ glow = [];
 halo = [];
 uniform = [];
 
-%% process trials for each subject
+%% Load the data
 
 % Turn off a table loading warning
 warnState = warning();
@@ -144,88 +132,158 @@ warning('off','MATLAB:table:ModifiedAndSavedVarnames');
 %set(0,'DefaultFigureVisible','off');
 
 % Loop through the list of subjects
-for ii = 1:length(pC)
-    % setup subject session information
-    subject = pC{ii};
-    observerID = subject{1};
-    dateID = subject{2};
-    sessionName = subject{3};
+for dd = 1:length(p.Results.diagnosis)
+    pC = subjectSets{dd};
     
-    for ss=1:4
-        fileName = fullfile(p.Results.dropBoxBaseDir,sprintf(['MTRP_data/Exp_002GN/Subject_' observerID '/' observerID '_%d.txt'],ss));
-        T = readtable(fileName);
-        trials{ss}(strcmp(T.Condition,'Glow'))=1;
-        trials{ss}(strcmp(T.Condition,'Halo'))=2;
-        trials{ss}(strcmp(T.Condition,'Uniform'))=3;
+    glow = [];
+    halo = [];
+    uniform = [];
+    for ii = 1:length(pC)
+        % setup subject session information
+        subject = pC{ii};
+        observerID = subject{1};
+        dateID = subject{2};
+        sessionName = subject{3};
+        
+        for ss=1:4
+            fileName = fullfile(p.Results.dropBoxBaseDir,sprintf(['MTRP_data/Exp_002GN/Subject_' observerID '/' observerID '_%d.txt'],ss));
+            T = readtable(fileName);
+            trials{ss}(strcmp(T.Condition,'Glow'))=1;
+            trials{ss}(strcmp(T.Condition,'Halo'))=2;
+            trials{ss}(strcmp(T.Condition,'Uniform'))=3;
+        end
+        
+        % get session data
+        [subData] = averageAcrossTrials(observerID, dateID, sessionName, trials, 'createPlot', false, 'verbose', false);
+        
+        % Get the mean of the response for each trial type
+        glowMean = nanmean(subData{1});
+        haloMean = nanmean(subData{2});
+        uniformMean = nanmean(subData{3});
+        
+        % add subject averages to respective POEM category matrices
+        glow = [glow; glowMean];
+        halo = [halo; haloMean];
+        uniform = [uniform; uniformMean];
     end
     
-    % get session data
-    [subData] = averageAcrossTrials(observerID, dateID, sessionName, trials, 'createPlot', false);
-    
-    % Get the mean of the response for each trial type
-    glowMean = nanmean(subData{1});
-    haloMean = nanmean(subData{2});
-    uniformMean = nanmean(subData{3});
-    
-    % add subject averages to respective POEM category matrices
-    glow = [glow; glowMean];
-    halo = [halo; haloMean];
-    uniform = [uniform; uniformMean];
+    data{dd} = {glow, halo, uniform};
 end
-
 
 % Restore the warning state
 warning(warnState);
 
 
+
+%% calculate the bootstrap auc
+myFun = @(x) sum(nanmean(x));
+nBoots = 1000;
+
+% All subjects, glow vs. uniform
+bootData = [data{1}{1}-data{1}{3}; data{2}{1}-data{2}{3}; data{3}{1}-data{3}{3}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+fprintf('glow vs. uniform, all subjects: mean (95 CI) = %2.2f [%2.2f to %2.2f]\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975));
+
+% All subjects, glow vs. halo
+bootData = [data{1}{1}-data{1}{2}; data{2}{1}-data{2}{2}; data{3}{1}-data{3}{2}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+fprintf('glow vs. halo, all subjects: mean (95 CI) = %2.2f [%2.2f to %2.2f]\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975));
+
+% All subjects, halo vs uniform
+bootData = [data{1}{2}-data{1}{3}; data{2}{2}-data{2}{3}; data{3}{2}-data{3}{3}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+fprintf('halo vs. uniform, all subjects: mean (95 CI) = %2.2f [%2.2f to %2.2f]\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975));
+
+% MwA, structured vs uniform
+bootData = [(data{1}{1}+data{1}{2})./2-data{1}{3}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+fprintf('structured vs. uniform, MwA: mean (95 CI) = %2.1f [%2.1f to %2.1f]\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975));
+
+% Non-MwA, structured vs uniform
+bootData = [(data{2}{1}+data{2}{2})./2-data{2}{3}; (data{3}{1}+data{3}{2})./2-data{3}{3}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+fprintf('structured vs. uniform, non-MwA: mean (95 CI) = %2.1f [%2.1f to %2.1f]\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975));
+
+
+% Interaction, migraine w aura vs. control with glow vs. uniform
+mwaData = data{1}{1}-data{1}{3};
+mwaN = size(mwaData,1);
+mwaBoot = sort(bootstrp(nBoots,myFun,mwaData));
+mwaSD = std(mwaBoot)/sqrt(1/mwaN);
+hafData = data{3}{1}-data{3}{3};
+hafN = size(hafData,1);
+hafBoot = sort(bootstrp(nBoots,myFun,hafData));
+hafSD = std(hafBoot)/sqrt(1/hafN);
+tStat = (mean(mwaBoot)-mean(hafBoot)) / sqrt( mwaSD^2/mwaN + hafSD^2/hafN   );
+df = mwaN+hafN-2;
+pStat = tpdf(tStat,df);
+fprintf('MwA vs. HaF x glow vs. uniform:  t-value (df), p = %2.2f (%d), %2.2f \n',tStat,df,pStat);
+
+% Interaction, migraine w aura vs. control with structured vs. uniform
+mwaData = (data{1}{1}+data{1}{2})./2-data{1}{3};
+mwaN = size(mwaData,1);
+mwaBoot = sort(bootstrp(nBoots,myFun,mwaData));
+mwaSD = std(mwaBoot)/sqrt(1/mwaN);
+hafData = (data{3}{1}+data{3}{2})./2-data{3}{3};
+hafN = size(hafData,1);
+hafBoot = sort(bootstrp(nBoots,myFun,hafData));
+hafSD = std(hafBoot)/sqrt(1/hafN);
+tStat = (mean(mwaBoot)-mean(hafBoot)) / sqrt( mwaSD^2/mwaN + hafSD^2/hafN   );
+df = mwaN+hafN-2;
+pStat = tpdf(tStat,df);
+fprintf('POST-HOC MwA vs. HaF x structured vs. uniform:  t-value (df), p = %2.2f (%d), %2.2f \n',tStat,df,pStat);
+
+% Interaction, migraine w aura vs. (control and MwoA) with structured vs. uniform
+mwaData = (data{1}{1}+data{1}{2})./2-data{1}{3};
+mwaN = size(mwaData,1);
+mwaBoot = sort(bootstrp(nBoots,myFun,mwaData));
+mwaSD = std(mwaBoot)/sqrt(1/mwaN);
+nonMwAData = [(data{2}{1}+data{2}{2})./2-data{2}{3}; (data{3}{1}+data{3}{2})./2-data{3}{3}];
+nonMwAN = size(nonMwAData,1);
+nonMwABoot = sort(bootstrp(nBoots,myFun,nonMwAData));
+nonMwASD = std(nonMwABoot)/sqrt(1/nonMwAN);
+tStat = (mean(mwaBoot)-mean(nonMwABoot)) / sqrt( mwaSD^2/mwaN + nonMwASD^2/nonMwAN   );
+pStat = tpdf(tStat,mwaN+nonMwAN-2);
+
+
+
 %% Fit the response
 
-    trialTypes = {glow, halo, uniform};
+trialTypes = data{1};
 
-    temporalFit = tfeTPUP('verbosity','none');
+temporalFit = tfeTPUP('verbosity','none');
 
-    % Set up some default params
-    [initialParams,vlbParams,vubParams] = temporalFit.defaultParams;
-    defaultParamsInfo.nInstances = 1;
+% Set up some default params
+[initialParams,vlbParams,vubParams] = temporalFit.defaultParams;
+defaultParamsInfo.nInstances = 1;
 
-    vlbParams.paramMainMatrix(1) = -500;
-    vubParams.paramMainMatrix = [1000 500 30 0 0 0];
+vlbParams.paramMainMatrix(1) = -500;
+vubParams.paramMainMatrix = [1000 500 30 0 0 0];
 
-    for tt = 1:length(trialTypes)
-        
-        typeData = trialTypes{tt};
-        
-        % create the packet for fitting
-        thePacket.response.values = nanmean(typeData)*100;
-        thePacket.response.timebase = (0:1/60:(length(thePacket.response.values)-1)/60)*1000;
-        thePacket.stimulus.timebase = thePacket.response.timebase;
-        thePacket.stimulus.values = zeros(size(thePacket.response.timebase));
-        thePacket.stimulus.values(30:60)=1;
-        thePacket.kernel = [];
-        thePacket.metaData = [];
-        
-        [paramsFit,fVal,modelResponseStruct{tt}] = ...
-            temporalFit.fitResponse(thePacket,...
-            'defaultParamsInfo', defaultParamsInfo,...
-            'initialParams',initialParams,...
-            'vlbParams',vlbParams,...
-            'vubParams',vubParams);
-
-    end
-
-
-    %% calculate the bootstrap auc
-    myFun = @(x) sum(nanmean(x));
+for tt = 1:length(trialTypes)
     
-    for tt = 1:length(trialTypes)
-        
-        typeData = trialTypes{tt};
-        bootstat = bootstrp(1000,myFun,typeData);
-        bootstat = sort(bootstat);
-        fprintf([p.Results.plotLabels{tt} ' mean (95 CI) = %2.2f [%2.2f to %2.2f]\n'],mean(bootstat),bootstat(25),bootstat(975));
-    end
+    typeData = trialTypes{tt};
     
+    % create the packet for fitting
+    thePacket.response.values = nanmean(typeData)*100;
+    thePacket.response.timebase = (0:1/60:(length(thePacket.response.values)-1)/60)*1000;
+    thePacket.stimulus.timebase = thePacket.response.timebase;
+    thePacket.stimulus.values = zeros(size(thePacket.response.timebase));
+    thePacket.stimulus.values(30:90)=1;
+    thePacket.kernel = [];
+    thePacket.metaData = [];
     
+    [paramsFit,fVal,modelResponseStruct{tt}] = ...
+        temporalFit.fitResponse(thePacket,...
+        'defaultParamsInfo', defaultParamsInfo,...
+        'initialParams',initialParams,...
+        'vlbParams',vlbParams,...
+        'vubParams',vubParams);
+    
+    paramsFit.paramMainMatrix
+end
+
+
 %% create plot if requested
 
 if p.Results.createPlot

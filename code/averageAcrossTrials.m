@@ -102,6 +102,7 @@ p.addParameter('rmseThresh',1.5,@isscalar);
 p.addParameter('blinkFrameBuffer',4,@isscalar);
 p.addParameter('nFramesBaseline',45,@isscalar);
 p.addParameter('createPlot',true,@islogical);
+p.addParameter('verbose',true,@islogical);
 p.addParameter('plotColors',{'r',[0.5 0.5 0.5],'k'},@iscell);
 p.addParameter('plotLabels',{'glow','halo','uniform'},@iscell);
 
@@ -172,8 +173,10 @@ for tt = 1:length(trialTypes)
             else
                 
                 % The file does not exist. Report this
-                str = ['Pupil file does not exist; skipping: ' pupilDataFile '\n'];
-                fprintf(str);
+                if p.Results.verbose
+                    str = ['Pupil file does not exist; skipping: ' pupilDataFile '\n'];
+                    fprintf(str);
+                end
                 
             end
         end
