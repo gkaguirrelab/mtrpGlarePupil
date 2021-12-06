@@ -1,4 +1,4 @@
-function [ bootData, figHandle ] = averagePerDiagnosis( varargin )
+function [ data, figHandles ] = averagePerDiagnosis( varargin )
 % Load and average pupil responses across trials for MwA, MwoA, or HaF
 % subjects
 %
@@ -174,35 +174,97 @@ end
 warning(warnState);
 
 
-
 %% calculate the bootstrap auc
 myFun = @(x) sum(nanmean(x));
 nBoots = 1000;
 
+
+%% Report means
+bootData = [data{1}{1}; data{2}{1}; data{3}{1}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+fprintf('Mean glow = %2.2f \n',mean(bootstat));
+bootData = [data{1}{2}; data{2}{2}; data{3}{2}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+fprintf('Mean halo = %2.2f \n',mean(bootstat));
+bootData = [data{1}{3}; data{2}{3}; data{3}{3}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+fprintf('Mean uniform = %2.2f \n',mean(bootstat));
+
+
+
 % All subjects, glow vs. uniform
 bootData = [data{1}{1}-data{1}{3}; data{2}{1}-data{2}{3}; data{3}{1}-data{3}{3}];
 bootstat = sort(bootstrp(nBoots,myFun,bootData));
-fprintf('glow vs. uniform, all subjects: mean (95 CI) = %2.2f [%2.2f to %2.2f]\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975));
+n = size(bootData,1);
+t = mean(bootstat) / std(bootstat);
+df = n-1;
+pVal = tpdf(t,df);
+fprintf('glow vs. uniform, all subjects: mean (95 CI) = %2.2f [%2.2f to %2.2f], t(df) = %2.1f (%d), p=%2.3f.\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975),t,df,pVal);
 
 % All subjects, glow vs. halo
 bootData = [data{1}{1}-data{1}{2}; data{2}{1}-data{2}{2}; data{3}{1}-data{3}{2}];
 bootstat = sort(bootstrp(nBoots,myFun,bootData));
-fprintf('glow vs. halo, all subjects: mean (95 CI) = %2.2f [%2.2f to %2.2f]\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975));
+n = size(bootData,1);
+t = mean(bootstat) / std(bootstat);
+df = n-1;
+pVal = tpdf(t,df);
+fprintf('glow vs. halo, all subjects: mean (95 CI) = %2.2f [%2.2f to %2.2f], t(df) = %2.1f (%d), p=%2.3f.\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975),t,df,pVal);
 
 % All subjects, halo vs uniform
 bootData = [data{1}{2}-data{1}{3}; data{2}{2}-data{2}{3}; data{3}{2}-data{3}{3}];
 bootstat = sort(bootstrp(nBoots,myFun,bootData));
-fprintf('halo vs. uniform, all subjects: mean (95 CI) = %2.2f [%2.2f to %2.2f]\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975));
+n = size(bootData,1);
+t = mean(bootstat) / std(bootstat);
+df = n-1;
+pVal = tpdf(t,df);
+fprintf('halo vs. uniform, all subjects: mean (95 CI) = %2.2f [%2.2f to %2.2f], t(df) = %2.1f (%d), p=%2.3f.\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975),t,df,pVal);
+
+
+% MwA, glow vs uniform
+bootData = [data{1}{1}-data{1}{3}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+n = size(bootData,1);
+t = mean(bootstat) / std(bootstat);
+df = n-1;
+pVal = tpdf(t,df);
+fprintf('glow vs. uniform, MwA: mean (95 CI) = %2.2f [%2.2f to %2.2f], t(df) = %2.1f (%d), p=%2.3f.\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975),t,df,pVal);
+
+% HaF, glow vs uniform
+bootData = [data{2}{1}-data{2}{3}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+n = size(bootData,1);
+t = mean(bootstat) / std(bootstat);
+df = n-1;
+pVal = tpdf(t,df);
+fprintf('glow vs. uniform, MwoA: mean (95 CI) = %2.2f [%2.2f to %2.2f], t(df) = %2.1f (%d), p=%2.3f.\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975),t,df,pVal);
+
+% HaF, glow vs uniform
+bootData = [data{3}{1}-data{3}{3}];
+bootstat = sort(bootstrp(nBoots,myFun,bootData));
+n = size(bootData,1);
+t = mean(bootstat) / std(bootstat);
+df = n-1;
+pVal = tpdf(t,df);
+fprintf('glow vs. uniform, HaF: mean (95 CI) = %2.2f [%2.2f to %2.2f], t(df) = %2.1f (%d), p=%2.3f.\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975),t,df,pVal);
+
 
 % MwA, structured vs uniform
 bootData = [(data{1}{1}+data{1}{2})./2-data{1}{3}];
 bootstat = sort(bootstrp(nBoots,myFun,bootData));
-fprintf('structured vs. uniform, MwA: mean (95 CI) = %2.1f [%2.1f to %2.1f]\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975));
+n = size(bootData,1);
+t = mean(bootstat) / std(bootstat);
+df = n-1;
+pVal = tpdf(t,df);
+fprintf('structured vs. uniform, MwA: mean (95 CI) = %2.2f [%2.2f to %2.2f], t(df) = %2.1f (%d), p=%2.3f.\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975),t,df,pVal);
 
 % Non-MwA, structured vs uniform
 bootData = [(data{2}{1}+data{2}{2})./2-data{2}{3}; (data{3}{1}+data{3}{2})./2-data{3}{3}];
 bootstat = sort(bootstrp(nBoots,myFun,bootData));
-fprintf('structured vs. uniform, non-MwA: mean (95 CI) = %2.1f [%2.1f to %2.1f]\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975));
+n = size(bootData,1);
+t = mean(bootstat) / std(bootstat);
+df = n-1;
+pVal = tpdf(t,df);
+fprintf('structured vs. uniform, non-MwA: mean (95 CI) = %2.2f [%2.2f to %2.2f], t(df) = %2.1f (%d), p=%2.3f.\n',mean(bootstat),bootstat(nBoots*0.025),bootstat(nBoots*0.975),t,df,pVal);
 
 
 % Interaction, migraine w aura vs. control with glow vs. uniform
@@ -233,22 +295,9 @@ df = mwaN+hafN-2;
 pStat = tpdf(tStat,df);
 fprintf('POST-HOC MwA vs. HaF x structured vs. uniform:  t-value (df), p = %2.2f (%d), %2.2f \n',tStat,df,pStat);
 
-% Interaction, migraine w aura vs. (control and MwoA) with structured vs. uniform
-mwaData = (data{1}{1}+data{1}{2})./2-data{1}{3};
-mwaN = size(mwaData,1);
-mwaBoot = sort(bootstrp(nBoots,myFun,mwaData));
-mwaSD = std(mwaBoot)/sqrt(1/mwaN);
-nonMwAData = [(data{2}{1}+data{2}{2})./2-data{2}{3}; (data{3}{1}+data{3}{2})./2-data{3}{3}];
-nonMwAN = size(nonMwAData,1);
-nonMwABoot = sort(bootstrp(nBoots,myFun,nonMwAData));
-nonMwASD = std(nonMwABoot)/sqrt(1/nonMwAN);
-tStat = (mean(mwaBoot)-mean(nonMwABoot)) / sqrt( mwaSD^2/mwaN + nonMwASD^2/nonMwAN   );
-pStat = tpdf(tStat,mwaN+nonMwAN-2);
-
-
 
 %% Fit the response
-
+%{
 trialTypes = data{1};
 
 temporalFit = tfeTPUP('verbosity','none');
@@ -280,42 +329,49 @@ for tt = 1:length(trialTypes)
         'vlbParams',vlbParams,...
         'vubParams',vubParams);
     
-    paramsFit.paramMainMatrix
 end
+%}
 
 
 %% create plot if requested
 
 if p.Results.createPlot
     
-    figHandle = figure();
-    
-    for tt = 1:length(trialTypes)
-        
-        typeData = trialTypes{tt};
-        
-        % Get the mean and SEM of the response for each trial type
-        yMean = nanmean(typeData);
-        ySamples = sum(~isnan(typeData));
-        ySEM = nanstd(typeData) ./ sqrt(ySamples);
-        
-        % Set the x temporal support
-        xVals = (1:length(yMean))/60;
-        % Plot
-        plotHandles(tt) = plot(xVals,yMean,'-','Color',p.Results.plotColors{tt});
-        hold on
-        plot(xVals,yMean+ySEM,':','Color',p.Results.plotColors{tt});
-        plot(xVals,yMean-ySEM,':','Color',p.Results.plotColors{tt});
-        plot(xVals,modelResponseStruct{tt}.values/100,'-b');
-        
-        if tt == length(trialTypes)
-            legend(plotHandles,p.Results.plotLabels);
-            title(groupName,'interpreter', 'none');
-            ylabel('Proportion change pupil area');
-            xlabel('Time [secs]');
-            ylim([-0.15 0.05])
+    for dd = 1:length(p.Results.diagnosis)
+        figHandles{dd} = figure();
+                
+        trialTypes = data{dd};
+        plotHandles = [];
+
+        for tt = 1:length(trialTypes)
+            
+            typeData = trialTypes{tt};
+            
+            % Get the mean and SEM of the response for each trial type
+            yMean = nanmean(typeData);
+            ySamples = sum(~isnan(typeData));
+            ySEM = nanstd(typeData) ./ sqrt(ySamples);
+            
+            % Set the x temporal support
+            xVals = (1:length(yMean))/60;
+            
+            % Plot
+            plotHandles(tt) = plot(xVals,yMean,'-','Color',p.Results.plotColors{tt});
+            hold on
+            plot(xVals,yMean+ySEM,':','Color',p.Results.plotColors{tt});
+            plot(xVals,yMean-ySEM,':','Color',p.Results.plotColors{tt});
+            %        plot(xVals,modelResponseStruct{tt}.values/100,'-b');
+            
+            
+            if tt == length(trialTypes)
+                legend(plotHandles,p.Results.plotLabels);
+                title(p.Results.diagnosis{dd},'interpreter', 'none');
+                ylabel('Proportion change pupil area');
+                xlabel('Time [secs]');
+                ylim([-0.15 0.05])
+            end
+            
         end
-        
     end
 end
 
