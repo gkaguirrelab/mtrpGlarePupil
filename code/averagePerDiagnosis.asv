@@ -367,7 +367,7 @@ if p.Results.createPlot
             
             if tt == length(trialTypes)
                 legend(plotHandles,p.Results.plotLabels);
-                title(p.Results.diagnosis{dd} + ", n = " + size(typeData,1),'interpreter', 'none');
+                title(p.Results.diagnosis{dd} + "n = " + size(typeData,1),'interpreter', 'none');
                 ylabel('Proportion change pupil area');
                 xlabel('Time [secs]');
                 ylim([-0.15 0.05])
