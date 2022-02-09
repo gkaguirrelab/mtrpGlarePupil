@@ -89,6 +89,7 @@ GLAR_1044 = {'GLAR_1044', '2021-11-03', {'session_1','session_2','session_3','se
 GLAR_1045 = {'GLAR_1045', '2021-11-16', {'session_1','session_2','session_3','session_4'}};
 GLAR_1047 = {'GLAR_1047', '2021-12-09', {'session_1','session_2','session_3','session_4'}};
 GLAR_1048 = {'GLAR_1048', '2021-12-14', {'session_1','session_2','session_3','session_4'}};
+GLAR_1049 = {'GLAR_1049', '2022-02-01', {'session_1','session_2','session_3','session_5'}};
 GLAR_1050 = {'GLAR_1050', '2022-02-03', {'session_1','session_2','session_3','session_4'}};
 
 
@@ -100,7 +101,7 @@ subjectSets{1} = {GLAR_1010, GLAR_1011, GLAR_1012, GLAR_1013, GLAR_1014,...
 % Migraine without aura
 subjectSets{2} = {GLAR_1023, GLAR_1025, GLAR_1026, GLAR_1028, GLAR_1030,...
     GLAR_1033, GLAR_1040, GLAR_1041, GLAR_1042, GLAR_1043, GLAR_1044,...
-    GLAR_1045, GLAR_1047, GLAR_1050};
+    GLAR_1045, GLAR_1047, GLAR_1049, GLAR_1050};
 % Headache free
 subjectSets{3} = {GLAR_1001, GLAR_1002, GLAR_1003, GLAR_1004, GLAR_1005,...
     GLAR_1006, GLAR_1007, GLAR_1008, GLAR_1009, GLAR_1022, GLAR_1029,...
