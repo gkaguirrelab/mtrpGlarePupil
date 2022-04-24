@@ -91,13 +91,14 @@ GLAR_1047 = {'GLAR_1047', '2021-12-09', {'session_1','session_2','session_3','se
 GLAR_1048 = {'GLAR_1048', '2021-12-14', {'session_1','session_2','session_3','session_4'}};
 GLAR_1049 = {'GLAR_1049', '2022-02-01', {'session_1','session_2','session_3','session_5'}};
 GLAR_1050 = {'GLAR_1050', '2022-02-03', {'session_1','session_2','session_3','session_4'}};
+GLAR_1051 = {'GLAR_1051', '2022-04-23', {'session_1','session_2','session_3','session_4'}};
 
 
 % subject POEM category
 % Migraine with Aura
 subjectSets{1} = {GLAR_1010, GLAR_1011, GLAR_1012, GLAR_1013, GLAR_1014,...
     GLAR_1015, GLAR_1016, GLAR_1017, GLAR_1020, GLAR_1021, GLAR_1034,...
-    GLAR_1035, GLAR_1038, GLAR_1048};
+    GLAR_1035, GLAR_1038, GLAR_1048, GLAR_1051};
 % Migraine without aura
 subjectSets{2} = {GLAR_1023, GLAR_1025, GLAR_1026, GLAR_1028, GLAR_1030,...
     GLAR_1033, GLAR_1040, GLAR_1041, GLAR_1042, GLAR_1043, GLAR_1044,...
