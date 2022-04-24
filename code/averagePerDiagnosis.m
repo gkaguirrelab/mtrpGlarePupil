@@ -184,6 +184,34 @@ warning(warnState);
 myFun = @(x) sum(nanmean(x));
 nBoots = 1000;
 
+%% Obtain the data means
+meanData = cellfun(@(x) [nanmean(x{1},2), nanmean(x{2},2), nanmean(x{3},2)],data,'UniformOutput',false);
+
+% Make a plot of mean effects
+figure
+divs=15;
+binWidth=1;
+for dd = 1:length(p.Results.diagnosis)
+    yVals = -100.*(meanData{dd}(:,1)-meanData{dd}(:,3));
+    xVals = repmat(dd,1,length(yVals));
+    [N,~,bin] = histcounts(yVals,'BinWidth',0.5);
+    for xx=1:length(N)
+        count = N(xx);
+        idx=find(bin==xx);
+        xVals(idx)=xVals(idx)+linspace(-(count-1)/divs,(count-1)/divs,count);
+    end
+    scatter(xVals,yVals,200,...
+        'MarkerEdgeColor','none',...
+        'MarkerFaceColor','k',...
+        'MarkerFaceAlpha',0.5);
+    hold on
+    plot([dd-0.25,dd+0.25],[mean(yVals),mean(yVals)],'-r')
+end
+plot([0.5 3.5],[0 0],':k');
+xlim([0.5 3.5]);
+xticks([1 2 3]);
+xticklabels(p.Results.diagnosis)
+ylabel('Pupil response glow - uniform [%∆]');
 
 %% Report means
 bootData = [data{1}{1}; data{2}{1}; data{3}{1}];
@@ -366,8 +394,7 @@ if p.Results.createPlot
             hold on
             plot(xVals,yMean+ySEM,':','Color',p.Results.plotColors{tt});
             plot(xVals,yMean-ySEM,':','Color',p.Results.plotColors{tt});
-            %        plot(xVals,modelResponseStruct{tt}.values/100,'-b');
-            
+            %        plot(xVals,modelResponseStruct{tt}.values/100,'-b');            
             
             if tt == length(trialTypes)
                 legend(plotHandles,p.Results.plotLabels);
