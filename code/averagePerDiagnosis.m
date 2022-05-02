@@ -116,7 +116,7 @@ p.addParameter('dropBoxBaseDir',getpref('mtrpGlarePupil','dropboxBaseDir'),@isch
 p.addParameter('createPlot',true,@islogical);
 p.addParameter('plotColors',{'r',[0 0 1],'k'},@iscell);
 p.addParameter('plotLabels',{'Glow','Halo','Uniform'},@iscell);
-p.addParameter('diagnosis',{'MwA','MwoA','HaF'},@iscell);
+p.addParameter('diagnosis',{'Migraine with aura','Migraine without aura','Headache free'},@iscell);
 
 % parse
 p.parse( varargin{:})
@@ -390,12 +390,17 @@ if p.Results.createPlot
             xVals = (1:length(yMean))/60;
             
             % Plot
-            plotHandles(tt) = plot(xVals,yMean,'-','Color',p.Results.plotColors{tt},'LineWidth',2);
+            pl = subplot(1,1,1);
+            xx = 0:.025:xVals(end);
+            yy = spline(xVals,yMean,xx);
+            yySEM = spline(xVals,ySEM,xx);
+            plotHandles(tt) = plot(xx,yy,'-','Color',p.Results.plotColors{tt},'LineWidth',2);
+            pl.Box = 'off';
             hold on
-            time = [xVals, fliplr(xVals)];
-            inBetween = [yMean+ySEM, fliplr(yMean-ySEM)];
-            patch(time,inBetween,p.Results.plotColors{tt},'FaceAlpha',0.05);
-            patch(time,inBetween,p.Results.plotColors{tt},'FaceAlpha',0.05);
+            time = [xx, fliplr(xx)];
+            inBetween = [yy+yySEM, fliplr(yy-yySEM)];
+            patch(time,inBetween,p.Results.plotColors{tt},'EdgeColor','none','FaceAlpha',0.08);
+            patch(time,inBetween,p.Results.plotColors{tt},'EdgeColor','none','FaceAlpha',0.08);
 %             plot(xVals,yMean+ySEM,':','Color',p.Results.plotColors{tt});
 %             plot(xVals,yMean-ySEM,':','Color',p.Results.plotColors{tt});
             %        plot(xVals,modelResponseStruct{tt}.values/100,'-b');            
@@ -403,7 +408,7 @@ if p.Results.createPlot
             if tt == length(trialTypes)
                 lgd = legend(plotHandles,p.Results.plotLabels,'Location', 'southeast');
                 lgd.FontSize = 16;
-                title([p.Results.diagnosis{dd} + ", n = " + size(typeData,1)], 'FontSize', 16);
+                title([p.Results.diagnosis{dd}], 'FontSize', 16);
                 ylabel('Proportion change pupil area', 'FontSize', 16);
                 xlabel('Time [secs]', 'FontSize', 16);
                 ylim([-0.15 0.05])
