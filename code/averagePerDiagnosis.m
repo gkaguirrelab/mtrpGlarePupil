@@ -114,9 +114,9 @@ p = inputParser; p.KeepUnmatched = false;
 % Optional
 p.addParameter('dropBoxBaseDir',getpref('mtrpGlarePupil','dropboxBaseDir'),@ischar);
 p.addParameter('createPlot',true,@islogical);
-p.addParameter('plotColors',{'r',[0.5 0.5 0.5],'k'},@iscell);
-p.addParameter('plotLabels',{'glow','halo','uniform'},@iscell);
-p.addParameter('diagnosis',{'mwa','mwoa','haf'},@iscell);
+p.addParameter('plotColors',{'r',[0 0 1],'k'},@iscell);
+p.addParameter('plotLabels',{'Glow','Halo','Uniform'},@iscell);
+p.addParameter('diagnosis',{'MwA','MwoA','HaF'},@iscell);
 
 % parse
 p.parse( varargin{:})
@@ -211,7 +211,7 @@ plot([0.5 3.5],[0 0],':k');
 xlim([0.5 3.5]);
 xticks([1 2 3]);
 xticklabels(p.Results.diagnosis)
-ylabel('Pupil response glow - uniform [%∆]');
+ylabel('Pupil response glow - uniform [%∆]','FontSize',16);
 
 %% Report means
 bootData = [data{1}{1}; data{2}{1}; data{3}{1}];
@@ -390,17 +390,22 @@ if p.Results.createPlot
             xVals = (1:length(yMean))/60;
             
             % Plot
-            plotHandles(tt) = plot(xVals,yMean,'-','Color',p.Results.plotColors{tt});
+            plotHandles(tt) = plot(xVals,yMean,'-','Color',p.Results.plotColors{tt},'LineWidth',2);
             hold on
-            plot(xVals,yMean+ySEM,':','Color',p.Results.plotColors{tt});
-            plot(xVals,yMean-ySEM,':','Color',p.Results.plotColors{tt});
+            time = [xVals, fliplr(xVals)];
+            inBetween = [yMean+ySEM, fliplr(yMean-ySEM)];
+            patch(time,inBetween,p.Results.plotColors{tt},'FaceAlpha',0.05);
+            patch(time,inBetween,p.Results.plotColors{tt},'FaceAlpha',0.05);
+%             plot(xVals,yMean+ySEM,':','Color',p.Results.plotColors{tt});
+%             plot(xVals,yMean-ySEM,':','Color',p.Results.plotColors{tt});
             %        plot(xVals,modelResponseStruct{tt}.values/100,'-b');            
             
             if tt == length(trialTypes)
-                legend(plotHandles,p.Results.plotLabels);
-                title(p.Results.diagnosis{dd} + ", n = " + size(typeData,1),'interpreter', 'none');
-                ylabel('Proportion change pupil area');
-                xlabel('Time [secs]');
+                lgd = legend(plotHandles,p.Results.plotLabels,'Location', 'southeast');
+                lgd.FontSize = 16;
+                title([p.Results.diagnosis{dd} + ", n = " + size(typeData,1)], 'FontSize', 16);
+                ylabel('Proportion change pupil area', 'FontSize', 16);
+                xlabel('Time [secs]', 'FontSize', 16);
                 ylim([-0.15 0.05])
             end
             
