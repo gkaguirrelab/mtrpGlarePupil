@@ -191,7 +191,7 @@ T
 fprintf('\n')
 
 %% Report t-test for glow vs. halo
-[~,pVal,ci,stats] = ttest(...
+[~,pVal,ci,stats] = ttest2(...
     -100.*cell2mat(cellfun(@(x) x(:,1)',meanData,'UniformOutput',false)),...
     -100.*cell2mat(cellfun(@(x) x(:,2)',meanData,'UniformOutput',false))...
     );
@@ -232,7 +232,7 @@ end
 %  t-tests
 [~,pVal,ci,stats] = ttest(cell2mat(yVals'));
 fprintf('All subjects, glow-uniform: t(df) = %2.2f (%d); p = %2.3f; mean (95CI) = %2.1f (%2.1f,%2.1f)  \n',stats.tstat,stats.df,pVal,mean(ci),ci(1),ci(2));
-[~,pVal,ci,stats] = ttest(yVals{1},yVals{3});
+[~,pVal,ci,stats] = ttest2(yVals{1},yVals{3});
 fprintf('MwA vs HaF, glow-uniform: t(df) = %2.2f (%d); p = %2.3f; mean (95CI) = %2.1f (%2.1f,%2.1f)  \n',stats.tstat,stats.df,pVal,mean(ci),ci(1),ci(2));
 
 
@@ -270,7 +270,7 @@ end
 % Report t-tests
 [~,pVal,ci,stats] = ttest(cell2mat(yVals'));
 fprintf('All subjects, bright-uniform: t(df) = %2.2f (%d); p = %2.3f; mean (95CI) = %2.1f (%2.1f,%2.1f)  \n',stats.tstat,stats.df,pVal,mean(ci),ci(1),ci(2));
-[~,pVal,ci,stats] = ttest(yVals{1},yVals{3});
+[~,pVal,ci,stats] = ttest2(yVals{1},yVals{3});
 fprintf('MwA vs HaF, bright-uniform: t(df) = %2.2f (%d); p = %2.3f; mean (95CI) = %2.1f (%2.1f,%2.1f)  \n',stats.tstat,stats.df,pVal,mean(ci),ci(1),ci(2));
 
 
