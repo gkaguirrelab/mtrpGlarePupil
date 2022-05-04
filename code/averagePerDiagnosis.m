@@ -134,9 +134,6 @@ uniform = [];
 warnState = warning();
 warning('off','MATLAB:table:ModifiedAndSavedVarnames');
 
-% Hide the figures as we make them
-%set(0,'DefaultFigureVisible','off');
-
 % Loop through the list of subjects
 for dd = 1:length(p.Results.diagnosis)
     pC = subjectSets{dd};
@@ -183,6 +180,7 @@ warning(warnState);
 %% Obtain the data means
 meanData = cellfun(@(x) [nanmean(x{1},2), nanmean(x{2},2), nanmean(x{3},2)],data,'UniformOutput',false);
 
+
 %% Provide a table of the mean responses
 T = array2table(cell2mat(cellfun(@(x) 100.*mean(x)',meanData,'UniformOutput',false)));
 T.Properties.RowNames=p.Results.plotLabels;
@@ -191,6 +189,14 @@ T.Properties.VariableNames=p.Results.diagnosis;
 fprintf('Table of mean percent change pupil response by group and stimulus:\n')
 T
 fprintf('\n')
+
+%% Report t-test for glow vs. halo
+[~,pVal,ci,stats] = ttest(...
+    -100.*cell2mat(cellfun(@(x) x(:,1)',meanData,'UniformOutput',false)),...
+    -100.*cell2mat(cellfun(@(x) x(:,2)',meanData,'UniformOutput',false))...
+    );
+fprintf('All subjects, glow-halo: t(df) = %2.2f (%d); p = %2.3f; mean (95CI) = %2.1f (%2.1f,%2.1f)  \n',stats.tstat,stats.df,pVal,mean(ci),ci(1),ci(2));
+
 
 %% Report glow-uniform effects
 if p.Results.createPlot
