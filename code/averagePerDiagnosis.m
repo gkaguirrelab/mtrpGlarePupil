@@ -392,8 +392,8 @@ if p.Results.createPlot
             % Plot
             pl = subplot(1,1,1);
             xx = 0:.025:xVals(end);
-            yy = spline(xVals,yMean,xx);
-            yySEM = spline(xVals,ySEM,xx);
+            yy = csaps(xVals,yMean,0.9999,xx);
+            yySEM = csaps(xVals,ySEM,0.9999,xx);
             plotHandles(tt) = plot(xx,yy,'-','Color',p.Results.plotColors{tt},'LineWidth',2);
             pl.Box = 'off';
             hold on
