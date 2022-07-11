@@ -19,7 +19,7 @@
 
 
 %% Housekeeping
-close all
+%close all
 
 %% Define properties of the stimulus
 
@@ -36,14 +36,21 @@ contrast_background = 0.0;
 contrast_center = 1.0;
 
 % The names of the stimuli
-stimulus_labels = {'glare','halo','uniform'};
+stimulus_labels = {'glare','halo','uniform','stripe'};
 
 % Contrast of the inner edge of the surround for the glare, halo, and
 % uniform
-contrast_inner = [1, -0.5, 0.137 ];
+contrast_inner = [1, -0.5, 0.137, 0.137 ];
 
 % Contrast at the outer edge of the surround for glare, halo, and uniform
-contrast_outer = [-0.5, 0.607, 0.137 ];
+contrast_outer = [-0.5, 0.607, 0.137, 0.607 ];
+
+% Number of sinusoidal cycles to include in the "stripe" stimulus
+numCycles = 1;
+
+% Find the phase shift that places the start of the cosine at the same
+% point that the uniform occupies adjacent to the pedastal.
+phaseShift = pi;
 
 %% Create visualization of the stimuli
 % Loop through the sets
@@ -64,7 +71,12 @@ for ss = 1:length(contrast_inner)
     stimImage(R < radius_c) = contrast_center;
     
     % Render the stimus surround
-    gradient = @(r) (contrast_inner(ss) - (contrast_inner(ss) - contrast_outer(ss)) .* ((r - radius_c) ./ (radius_g - radius_c)));
+    if ss <=3
+        gradient = @(r) (contrast_inner(ss) - (contrast_inner(ss) - contrast_outer(ss)) .* ((r - radius_c) ./ (radius_g - radius_c)));
+    else
+        gradient = @(r) contrast_inner(ss) + contrast_outer(ss) .* sin(phaseShift + ((r - radius_c) ./ (radius_g - radius_c)).*2.*pi.*numCycles);
+    end
+
     for ii = 1:size(stimImage, 1)
         for jj = 1:size(stimImage, 2)
             if R(ii, jj) > radius_c && R(ii, jj) <= radius_g
