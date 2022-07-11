@@ -40,10 +40,10 @@ stimulus_labels = {'glare','halo','uniform','stripe'};
 
 % Contrast of the inner edge of the surround for the glare, halo, and
 % uniform
-contrast_inner = [1, -0.5, 0.137, 0.137 ];
+contrast_inner = [1, -0.5, 0.137, 0.113 ];
 
 % Contrast at the outer edge of the surround for glare, halo, and uniform
-contrast_outer = [-0.5, 0.607, 0.137, 0.607 ];
+contrast_outer = [-0.5, 0.607, 0.137, 0.5 ];
 
 % Number of sinusoidal cycles to include in the "stripe" stimulus
 numCycles = 3;
