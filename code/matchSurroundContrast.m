@@ -46,7 +46,7 @@ contrast_inner = [1, -0.5, 0.137, 0.137 ];
 contrast_outer = [-0.5, 0.607, 0.137, 0.607 ];
 
 % Number of sinusoidal cycles to include in the "stripe" stimulus
-numCycles = 1;
+numCycles = 3;
 
 % Find the phase shift that places the start of the cosine at the same
 % point that the uniform occupies adjacent to the pedastal.
