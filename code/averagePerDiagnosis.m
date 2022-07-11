@@ -328,7 +328,7 @@ if p.Results.createPlot
                 lgd = legend(plotHandles,p.Results.plotLabels,'Location', 'southeast');
                 lgd.FontSize = 16;
                 title([p.Results.diagnosis{dd}], 'FontSize', 16);
-                ylabel('Percent change pupil area', 'FontSize', 16);
+                ylabel('Pupil area [%∆]', 'FontSize', 16);
                 xlabel('Time [secs]', 'FontSize', 16);
                 ylim([-15 5])
             end
