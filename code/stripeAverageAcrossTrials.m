@@ -53,34 +53,19 @@ function [ data, figHandle ] = averageAcrossTrials( observerID, dateID, sessionN
 %
 % Examples:
 %{
-    observerID = 'BRIANA HAGGERTY';
-    dateID = '2020-12-14';
+    observerID = 'GLAR_2003';
+    dateID = '2022-08-03';
     sessionName = {'session_1','session_2','session_3','session_4'};
     experimentName = 'pupilGlare_01';
 
     for ss=1:4
-        T = readtable(sprintf(['/Users/aguirre/Dropbox (Aguirre-Brainard Lab)/MTRP_data/Exp_002GN/Subject_' observerID '/' observerID '_%d.txt'],ss));
+        T = readtable(sprintf(['/Users/aguirre/Dropbox (Aguirre-Brainard Lab)/MTRP_data/Exp_002GO/Subject_' observerID '/' observerID '_%d.txt'],ss));
         trials{ss}(strcmp(T.Condition,'Glow'))=1;
-        trials{ss}(strcmp(T.Condition,'Halo'))=2;
+        trials{ss}(strcmp(T.Condition,'Stripe'))=2;
         trials{ss}(strcmp(T.Condition,'Uniform'))=3;
     end
 
-    [ data ] = averageAcrossTrials( observerID, dateID, sessionName, trials, 'experimentName', experimentName );
-%}
-%{
-    observerID = 'GLAR_01';
-    dateID = '2020-12-22';
-    sessionName = {'session_1','session_2','session_3','session_4'};
-    experimentName = 'pupilGlare_01';
-
-    for ss=1:4
-        T = readtable(sprintf(['/Users/aguirre/Dropbox (Aguirre-Brainard Lab)/MTRP_data/Exp_002GN/Subject_' observerID '/' observerID '_%d.txt'],ss));
-        trials{ss}(strcmp(T.Condition,'Glow'))=1;
-        trials{ss}(strcmp(T.Condition,'Halo'))=2;
-        trials{ss}(strcmp(T.Condition,'Uniform'))=3;
-    end
-
-    [ data ] = averageAcrossTrials( observerID, dateID, sessionName, trials, 'experimentName', experimentName, 'rmseThresh',1, 'blinkFrameBuffer',4 );
+    [ data ] = stripeAverageAcrossTrials( observerID, dateID, sessionName, trials, 'experimentName', experimentName, 'rmseThresh',1, 'blinkFrameBuffer',4 );
 %}
 
 
