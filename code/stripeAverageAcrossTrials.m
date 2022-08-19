@@ -89,7 +89,7 @@ p.addParameter('nFramesBaseline',45,@isscalar);
 p.addParameter('createPlot',true,@islogical);
 p.addParameter('verbose',true,@islogical);
 p.addParameter('plotColors',{'r',[0.5 0.5 0.5],'k'},@iscell);
-p.addParameter('plotLabels',{'glow','halo','uniform'},@iscell);
+p.addParameter('plotLabels',{'glow','stripe','uniform'},@iscell);
 
 % parse
 p.parse(observerID, dateID, sessionName, trials, varargin{:})
