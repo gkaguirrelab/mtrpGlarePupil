@@ -94,6 +94,19 @@ for ss = 1:length(contrast_inner)
     % Add a plot title
     title(stimulus_labels{ss})
     
+    % Save the stimulus into a folder in the code directory for further
+    % processing.
+    scriptPath = matlab.desktop.editor.getActiveFilename;
+    scriptPath = fileparts(scriptPath);
+    stimulusFolder = fullfile(scriptPath, 'stimulus');
+    if ~isfolder(stimulusFolder)
+        mkdir(stimulusFolder)
+    end
+    stimImageToSave = stimImage - min(stimImage(:));
+    stimImageToSave = stimImageToSave ./ max(stimImageToSave(:));
+    savepath = fullfile(stimulusFolder, [stimulus_labels{ss}  '.mat']);
+    save(savepath, 'stimImageToSave')
+    
     % Display a cross-section through the stimulus
     subplot(1, 2, 2);
     xRange = -10 : 0.01 : 10;
