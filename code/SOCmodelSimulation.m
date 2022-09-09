@@ -22,40 +22,41 @@ for ii = 1:length(stimulusFiles)
     stimulus(:,:,ii) = ss;
 end
 
-% initialize cache for model runs
-cache1 = [];
-cache2 = [];
-cache3 = [];
-cache4 = [];
+% Specify typical values for V1, V2, V3, and hv4 areas
+c = [0.9276, 0.9928, 0.9941, 0.9472];
+n = [0.1814, 0.1285, 0.1195, 0.1152];
+sd = [0.9308, 1.0738, 1.4671, 2.1242];
 
-% Run the model with typical V1 response values
-c = 0.9276;
-n = 0.1814;
-sd = 0.9308;
-[response,cache1] = socmodel(stimulus,150,[0 1 0.5],1.2,{37.5 -1 1 8 2 .01 2 0}, ...
-                            1,.5,sd,1/sd,n,c,cache1);
-
-% Run it for typical V2 vals
-c = 0.9928;
-n = 0.1285;
-sd = 1.0738;
-[response2,cache2] = socmodel(stimulus,150,[0 1 0.5],1.2,{37.5 -1 1 8 2 .01 2 0}, ...
-                            1,.5,sd,1/sd,n,c,cache2);
-
-% Run it for typical V3 vals
-c =  0.9941;
-n = 0.1195;
-sd = 1.4671;
-[response3,cache3] = socmodel(stimulus,150,[0 1 0.5],1.2,{37.5 -1 1 8 2 .01 2 0}, ...
-                            1,.5,sd,1/sd,n,c,cache3);   
-                        
-% Run it for typical hV4 vals
-c = 0.9472;
-n = 0.1152;
-sd = 2.1242;
-[response4,cache4] = socmodel(stimulus,150,[0 1 0.5],1.2,{37.5 -1 1 8 2 .01 2 0}, ...
-                            1,.5,sd,1/sd,n,c,cache4);                         
-                        
+% Specify save names and struct containers
+responseSaveNames = {'response1', 'response2', 'response3', 'response4'};
+cacheSaveNames = {'cache1', 'cache2', 'cache3', 'cache4'};
+responses = [];
+caches = [];
+%% Run models 
+for ii = 1:length(responseSaveNames)
+    % Initiate caches
+    caches.(cacheSaveNames{ii}) = [];
+    % Run SOC Model
+    [responses.(responseSaveNames{ii}),caches.(cacheSaveNames{ii})] = socmodel(stimulus,150,[0 1 0.5],1.2,{37.5 -1 1 8 2 .01 2 0}, ...
+                                                                               1,.5,sd(ii),1/sd(ii),n(ii),c(ii),caches.(cacheSaveNames{ii}));   
+%     % Get stimulus2 stage from cache. This contains gabor fitted images. We
+%     % get these and calculate the complex-cell energy here again, because
+%     % we will deviate here for the SOV model
+%     gaborFittedStim = caches.(cacheSaveNames{ii}).stimulus2;
+%     complexCellStimulus = sqrt(blob(gaborFittedStim.^2,2,2));
+%     
+%     % Get resolution
+%     nrGaborOrientations = 8;
+%     res = sqrt(size(stimulus,2)/nrGaborOrientations);
+%     [~,xx,yy] = makegaussian2d(res,2,2,2,2);
+%     
+%     % Given a set of parameters this outputs a 2D gaussian
+%     gaufun1 = @(pp) vflatten(makegaussian2d(res,pp(1),pp(2),pp(3),pp(3),xx,yy,0,0)/(2*pi*pp(3)^2));
+% 
+%     % SOV model
+%     modelfun = @(pp,dd) pp(4) * var(reshape(reshape(dd,[],res*res) * gaufun1(pp),[],nrOrientations),[],2).^pp(5);
+%     modelfit = modelfun(params, stimulus);
+end                
 
 % visualize the results
 figure; setfigurepos([100 100 700 300]);
@@ -66,12 +67,12 @@ for p=1:4
   subplot(4,5,subplotCounter + 1);
   imagesc(stimulus(:,:,p),[0 1]); axis image tight; colormap(gray); colorbar; title(stimNames{p});
   subplot(4,5,subplotCounter + 2);
-  imagesc(response(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V1');
+  imagesc(responses.response1(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V1');
   subplot(4,5,subplotCounter + 3);
-  imagesc(response2(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V2');
+  imagesc(responses.response2(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V2');
   subplot(4,5,subplotCounter + 4);
-  imagesc(response3(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V3');
+  imagesc(responses.response3(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V3');
   subplot(4,5,subplotCounter + 5);
-  imagesc(response4(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('hv4');
+  imagesc(responses.response4(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('hv4');
   subplotCounter = subplotCounter + 5;
 end
