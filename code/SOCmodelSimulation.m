@@ -36,48 +36,57 @@ caches = [];
 gammaResponsesMean = [];
 %% Run models 
 for ii = 1:length(responseSaveNames)
+    %% SOC model, Kay - BOLD
     % Initiate caches
     caches.(cacheSaveNames{ii}) = [];
     
     % Run SOC Model which gives us the BOLD.
-    [responses.(responseSaveNames{ii}),caches.(cacheSaveNames{ii})] = socmodel(stimulus,150,[0 1 0.5],1.2,{37.5 -1 1 8 2 .01 2 0}, ...
+    [responses.BOLD.(responseSaveNames{ii}),caches.(cacheSaveNames{ii})] = socmodel(stimulus,150,[0 1 0.5],1.2,{37.5 -1 1 8 2 .01 2 0}, ...
                                                                                1,.5,sd(ii),spacing(ii),n(ii),c(ii),caches.(cacheSaveNames{ii})); 
                                                                            
-    % RUN THE SOV model now.                                                                      
-    % Get stimulus2 stage from cache. This contains gabor fitted images. We
-    % get these and calculate the complex-cell energy here again seprately, 
-    % because we will deviate from this point for the SOV model calculation.
+    %% SOV model, Hermes - Gamma                                                          
+    % Get stimulus2 stage from SOC image cache. This contains gabor fitted
+    % images. We get these and re-calculate complex-cell energy model
+    % again. This is where the SOV model deviates from the SOC model
     gaborFittedStim = caches.(cacheSaveNames{ii}).stimulus2;
     complexCellStimulus = sqrt(blob(gaborFittedStim.^2,2,2));
     
-    % Set number of gabor orientation and set resolution.
+    % Set number of gabor orientation and get the resolution.
     nrGaborOrientations = 8;
     res = sqrt(size(complexCellStimulus,2)/nrGaborOrientations);
-
-    % Make gaussian filters, make full. Not sure if this is correct. 
+    
+    % Commented out below is the original model for Gamma calculation. 
+    % The formula is response = gain * var(gaborFilteredStim * 2DpRF).^powerLawPower
+    % modelfun = @(pp,dd) pp(4) * var(reshape(reshape(dd,[],res*res) * gaufun1(pp),[],nrOrientations),[],2).^pp(5);
+    
+    % Create a set of gaussian filters, make full. Check this with Geoff.
     [d,d,d,d,filters] = applymultiscalegaussianfilters(randn(1,res^2),[sd(ii)],[1/sd(ii)],.01,2);
     filters = full(filters);
 %     nz = filters ~= 0;
-    
-    % Do the model calculation.
-    % The original model commented out below. 
-    % modelfun = @(pp,dd) pp(4) * var(reshape(reshape(dd,[],res*res) * gaufun1(pp),[],nrOrientations),[],2).^pp(5);
   
-    % I hardcode the prf gain or pp(4) to 1. 
-    % pp(5) is power law power, so pass the n set. 
-    modelfit = 1 * var(reshape(reshape(complexCellStimulus,[],res*res) * filters,[],nrGaborOrientations),[],2).^n(ii);
-
-    % Separate the matrix into gamma values
+    % Loop through the pRF filters and calculate the model for each pRF.
+    % We hardcode the prf gain or to 1. And pass the same power-law values 
+    % that we used for the SOC model. We add the results into a one big
+    % vector.
+    modelfit = [];
+    for tt = 1:length(filters)
+        fit = 1 * var(reshape(reshape(complexCellStimulus,[],res*res) * filters(:,tt),[],nrGaborOrientations),[],2).^n(ii);
+        modelfit = [modelfit; fit];
+    end
+    
+    % Separate the vector into gamma values for each stimulus.
     combined = [];
     combined = [combined modelfit(1:4:length(modelfit)) modelfit(2:4:length(modelfit)) modelfit(3:4:length(modelfit)) modelfit(4:4:length(modelfit))];
     
-    % Get the mean across PRFs
-    gammaResponsesMean(:,ii) = mean(combined)';
-%     F = sqrt(size(gausGamma',2));
-%     response = reshape(gausGamma',F,F,[]);
+%     % Get the mean across PRFs
+%     gammaResponsesMean(:,ii) = mean(combined)';
+
+    % Reshape the vectors into images and add it into the gamma
+    F = sqrt(size(combined',2));
+    responses.gamma.(responseSaveNames{ii}) = reshape(combined,F,F,[]);
 end                
 
-% visualize the results
+% visualize the results for BOLD
 f = figure; setfigurepos([100 100 700 300]);
 subplotCounter = 0;
 stimNames = {'glare', 'halo', 'stripe', 'uniform'};
@@ -86,15 +95,34 @@ for p=1:4
   subplot(4,5,subplotCounter + 1);
   imagesc(stimulus(:,:,p),[0 1]); axis image tight; colormap(gray); colorbar; title(stimNames{p});
   subplot(4,5,subplotCounter + 2);
-  imagesc(responses.response1(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V1');
+  imagesc(responses.BOLD.response1(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V1');
   subplot(4,5,subplotCounter + 3);
-  imagesc(responses.response2(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V2');
+  imagesc(responses.BOLD.response2(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V2');
   subplot(4,5,subplotCounter + 4);
-  imagesc(responses.response3(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V3');
+  imagesc(responses.BOLD.response3(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V3');
   subplot(4,5,subplotCounter + 5);
-  imagesc(responses.response4(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('hv4');
+  imagesc(responses.BOLD.response4(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('hv4');
   subplotCounter = subplotCounter + 5;
 end
-t = table(['stim1'; 'stim2'; 'stim3'; 'stim4'], gammaResponsesMean(:,1), gammaResponsesMean(:,2), gammaResponsesMean(:,3), gammaResponsesMean(:,4));
-t.Properties.VariableNames = ["Stimulus SOV - gamma", "V1 mean", "V2 mean", "V3 mean", "hV4 mean"];
-t
+sgtitle('SOC model - BOLD, Kay') 
+
+% Do the same for gamma
+% visualize the results for BOLD
+f2 = figure; setfigurepos([100 100 700 300]);
+subplotCounter = 0;
+stimNames = {'glare', 'halo', 'stripe', 'uniform'};
+fprintf('Plotting SOC model - gamma.... \n')
+for p=1:4
+  subplot(4,5,subplotCounter + 1);
+  imagesc(stimulus(:,:,p),[0 1]); axis image tight; colormap(gray); colorbar; title(stimNames{p});
+  subplot(4,5,subplotCounter + 2);
+  imagesc(responses.gamma.response1(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V1');
+  subplot(4,5,subplotCounter + 3);
+  imagesc(responses.gamma.response2(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V2');
+  subplot(4,5,subplotCounter + 4);
+  imagesc(responses.gamma.response3(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('V3');
+  subplot(4,5,subplotCounter + 5);
+  imagesc(responses.gamma.response4(:,:,p),[0 1.5]); axis image tight; colormap(gray); colorbar; title('hv4');
+  subplotCounter = subplotCounter + 5;
+end
+sgtitle('SOV model - gamma, Hermes') 
