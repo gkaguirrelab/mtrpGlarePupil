@@ -4,7 +4,7 @@ clc
 % We need Kendrick's knkutils toolbox. Check if it exists. Pull if it
 % doesn't.
 currentScriptPath = matlab.desktop.editor.getActiveFilename;
-matlabPath = currentScriptPath(1:end-50);
+matlabPath = currentScriptPath(1:end-46);
 knkutilsFolder = fullfile(matlabPath, 'toolboxes', 'knkutils');
 if ~isfolder(knkutilsFolder)
     fprintf('Pulling knkutils \n')
@@ -111,7 +111,7 @@ sgtitle('SOC model - BOLD, Kay')
 f2 = figure; setfigurepos([100 100 700 300]);
 subplotCounter = 0;
 stimNames = {'glare', 'halo', 'stripe', 'uniform'};
-fprintf('Plotting SOC model - gamma.... \n')
+fprintf('Plotting SOC model - Gamma.... \n')
 for p=1:4
   subplot(4,5,subplotCounter + 1);
   imagesc(stimulus(:,:,p),[0 1]); axis image tight; colormap(gray); colorbar; title(stimNames{p});
