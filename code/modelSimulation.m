@@ -61,7 +61,7 @@ for ii = 1:length(responseSaveNames)
     
     % Commented out below is the original SOV model for Gamma calculation.
     % from Hermes' script.
-    % The formula is response = gain * var(gaborFilteredStim * 2DpRF).^powerLawPower
+    % The formula is response = gain * var(gaborFilteredStim * GausspRF).^powerLawPower
     
     % modelfun = @(pp,dd) pp(4) * var(reshape(reshape(dd,[],res*res) * gaufun1(pp),[],nrOrientations),[],2).^pp(5);
     
