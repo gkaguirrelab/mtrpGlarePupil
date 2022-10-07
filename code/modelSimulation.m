@@ -1,18 +1,9 @@
 clear all
 clc
 
-% We need Kendrick's knkutils toolbox. Check if it exists. Pull if it
-% doesn't. Then, add path to it.
+% Load glare, halo, stripe, uniform stimulus and concatanate across time
 currentScriptPath = matlab.desktop.editor.getActiveFilename;
 matlabPath = currentScriptPath(1:end-46);
-knkutilsFolder = fullfile(matlabPath, 'toolboxes', 'knkutils');
-if ~isfolder(knkutilsFolder)
-    fprintf('Pulling knkutils \n')
-    system(['git clone https://github.com/cvnlab/knkutils.git ' knkutilsFolder]);
-end
-addpath(genpath(knkutilsFolder));
-
-% Load glare, halo, stripe, uniform stimulus and concatanate across time
 stimulusPath = fullfile(matlabPath, 'projects', 'mtrpGlarePupil', 'code', 'stimulus');
 stimulusFiles = dir(stimulusPath);
 stimulusFiles(1:2) = [];
