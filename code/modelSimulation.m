@@ -2,9 +2,9 @@ clear all
 clc
 
 % Load glare, halo, stripe, uniform stimulus and concatanate across time
-currentScriptPath = matlab.desktop.editor.getActiveFilename;
-matlabPath = currentScriptPath(1:end-46);
-stimulusPath = fullfile(matlabPath, 'projects', 'mtrpGlarePupil', 'code', 'stimulus');
+currentScriptPath = strsplit(mfilename('fullpath'),filesep);
+currentScriptPath = currentScriptPath(1:end-1);
+stimulusPath = fullfile(filesep,currentScriptPath{:}, 'stimulus');
 stimulusFiles = dir(stimulusPath);
 stimulusFiles(1:2) = [];
 stimulus = [];
