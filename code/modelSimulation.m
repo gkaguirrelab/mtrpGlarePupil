@@ -4,7 +4,7 @@ clc
 % Load glare, halo, stripe, uniform stimulus and concatanate across time
 currentScriptPath = strsplit(mfilename('fullpath'),filesep);
 currentScriptPath = currentScriptPath(1:end-1);
-stimulusPath = fullfile(filesep,currentScriptPath{:}, 'stimulus');
+stimulusPath = fullfile(currentScriptPath{:}, 'stimulus');
 stimulusFiles = dir(stimulusPath);
 stimulusFiles(1:2) = [];
 stimulus = [];
